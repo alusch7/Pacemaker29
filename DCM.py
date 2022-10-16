@@ -55,11 +55,11 @@ def registry():
     
     # Open user information
     login_info = open("Login_Info.txt","a+") 
-    num_users = open("NUM_USERS.txt","r")
+    num_users_file = open("NUM_USERS.txt","r")
     print("Number of users: ")
-    num_users = int(num_users.readline())
+    num_users = int(num_users_file.readline())
     print(num_users)
-    num_users.close()
+    num_users_file.close()
     
     
     # Create the window
@@ -77,9 +77,9 @@ def registry():
             if (event == "Submit"):
                
                 # If not append the list of users and increment number of users by 1
-                login_info.write("\n" + values[0] + "," + values[1])
-                num_users = open("NUM_USERS.txt","w")
-                num_users.write(str(num_users+1))
+                login_info.write(values[0] + "," + values[1] + "\n")
+                num_users_file = open("NUM_USERS.txt","w")
+                num_users_file.write(str(num_users+1))
                 sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
                 flag = 1
                 break
@@ -93,7 +93,7 @@ def registry():
             break
     window1.close()
     login_info.close()
-    num_users.close()
+    num_users_file.close()
     if(flag == 1):
         welcome_screen()
     
@@ -108,9 +108,9 @@ def login():
     ]
     
     login_info = open("Login_Info.txt","r+") 
-    num_users = open("NUM_USERS.txt","r")
+    num_users_file = open("NUM_USERS.txt","r")
     print("Number of users: ")
-    num_users = int(num_users.readline())
+    num_users = int(num_users_file.readline())
     print(num_users)
 
     # Create the window
@@ -128,9 +128,13 @@ def login():
                 for line in filestream:
 
                     currentline = line.split(",")
-                    
+                   # currentline = line.split("\n")
                     # Check the given username and password against all in the file
-                    if (currentline[0] == values[0] and currentline[1] == values[1]):
+#                    print(currentline[0])
+                   # print(currentline[1])
+                  #  print(values[0])
+                  #  print(values[1])
+                    if (currentline[0] == values[0] and currentline[1] == values[1] + "\n"):
                         access = True
                         break
 
@@ -144,14 +148,13 @@ def login():
                 print("ACCESS DENIED")
             
             
-            
-            break
+           
         elif (event == sg.WIN_CLOSED):
            
             break
         
     login_info.close()
-    num_users.close()    
+    num_users_file.close()    
         
     window1.close()     
 
