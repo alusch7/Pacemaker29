@@ -1,12 +1,22 @@
 # -*- coding: utf-8 -*-
 
 import PySimpleGUI as sg
-
+pacemaker_connected = False
 # Welcome Screen function
 def welcome_screen():
-    
+    print("CCCC")
     # Create Text and buttons
+    if(pacemaker_connected):
+        connection_string = "Connected"
+        connection_colour = "Green"
+    else:
+        connection_string = "Disconnected"
+        connection_colour = "red"
+    
     layout1 = [
+        
+                
+                [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
                 [sg.Text("Welcome Page", justification='center')], 
                 [sg.Button("Register New User",size=(10,2))], 
                 [sg.Button("Login As Existing User",size=(10,2))]
@@ -15,7 +25,7 @@ def welcome_screen():
 
     # Create the window
     window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
-
+    #sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
     # Create an event loop
     while True:
         
@@ -39,13 +49,24 @@ def welcome_screen():
     
     if(flag == 1):
         registry()
+        print("BBBBB")
     elif(flag == 2):
         login()
         
 def registry():
    
     # Ask User to enter new user information   
+    if(pacemaker_connected):
+        connection_string = "Connected"
+        connection_colour = "Green"
+    else:
+        connection_string = "Disconnected"
+        connection_colour = "red"
+    
     layout1 = [
+        
+                
+    [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
      [sg.Text("Register New User", justification='center')],    
     [sg.Text('Please enter a new username and password')],
     [sg.Text('username', size =(15, 1)), sg.InputText()],
@@ -64,12 +85,12 @@ def registry():
     [sg.Text('Pulse Width')],
     [sg.Text('VRP', size =(15, 1)), sg.InputText()],
     [sg.Text('ARP', size =(15, 1)), sg.InputText()],
-    
-    [sg.Submit(), sg.Cancel()]
+    [sg.Submit(), sg.Button("Go Back",size=(7,1))]
     ]
     
     # Open user information
     login_info = open("Login_Info.txt","a+") 
+    heart_info = open("Heart_Info.txt","a+") 
     num_users_file = open("NUM_USERS.txt","r")
     print("Number of users: ")
     num_users = int(num_users_file.readline())
@@ -79,25 +100,56 @@ def registry():
     
     # Create the window
     window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
-
+    username_exists = False
     # Create an event loop
     while True:
         # Read the event name and any inputs given
         event, values = window1.read()
-      
+        
         
         flag = 0
         # Check if 10 users have been added
+        if (event == "Go Back"):
+            flag = 1
+            print("AAAAAA")
+            break
+        
         if (num_users < 10):
             if (event == "Submit"):
                
                 # If not append the list of users and increment number of users by 1
-                login_info.write(values[0] + "," + values[1] + "\n")
-                num_users_file = open("NUM_USERS.txt","w")
-                num_users_file.write(str(num_users+1))
-                sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
-                flag = 1
-                break
+                
+                with open("Login_Info.txt", "r") as filestream:  
+                    for line in filestream:
+                        
+                        currentline = line.split(",")
+                       # currentline = line.split("\n")
+                        # Check the given username and password against all in the file
+                        print(currentline[0])
+                       # print(currentline[1])
+                      #  print(values[0])
+                      #  print(values[1])
+                        if (currentline[0] == values[0]):
+            
+                            username_exists = True
+
+                        
+                    if(not(username_exists)):
+                        login_info.write(values[0] + "," + values[1] + "\n")
+                        heart_info.write(values[2] + "," + values[3] + "," + values[4] + "," + values[5] + "," + values[6] + "," + values[7] + "," + values[8] + "," + values[9] + "\n")
+                        num_users_file = open("NUM_USERS.txt","w")
+                        num_users_file.write(str(num_users+1))
+  
+                        sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
+                        flag = 1
+                        break
+                    else:
+                        sg.Popup('Username already exists. Try a new one.', keep_on_top=True)
+                        flag = 2
+                        break
+                    
+                
+                break                
             elif (event == sg.WIN_CLOSED):
                
                 break
@@ -108,18 +160,30 @@ def registry():
             break
     window1.close()
     login_info.close()
+    heart_info.close()
     num_users_file.close()
     if(flag == 1):
         welcome_screen()
+    elif (flag == 2):
+        registry()
+        
     
     
 def login():
+    if(pacemaker_connected):
+        connection_string = "Connected"
+        connection_colour = "Green"
+    else:
+        connection_string = "Disconnected"
+        connection_colour = "red"
+    
     layout1 = [
+    [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
      [sg.Text("Login", justification='center')],    
     [sg.Text('Please enter your username and password')],
     [sg.Text('username', size =(15, 1)), sg.InputText()],
     [sg.Text('password', size =(15, 1)), sg.InputText()],
-    [sg.Submit(), sg.Cancel()]
+    [sg.Submit(), sg.Button("Go Back",size=(7,1))]
     ]
     
     login_info = open("Login_Info.txt","r+") 
@@ -131,17 +195,24 @@ def login():
     # Create the window
     window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
 
+    
     # Create an event loop
     while True:
         event, values = window1.read()
        
         flag = 0
+        
+        if (event == "Go Back"):
+            flag = 2
+            break
+        
         if (event == "Submit"):
     
             access = False
             with open("Login_Info.txt", "r") as filestream:
+                user_num = 0
                 for line in filestream:
-
+                    #print("AAAAAAA: " + str(user_num))
                     currentline = line.split(",")
                    # currentline = line.split("\n")
                     # Check the given username and password against all in the file
@@ -152,6 +223,7 @@ def login():
                     if (currentline[0] == values[0] and currentline[1] == values[1] + "\n"):
                         access = True
                         break
+                    user_num += 1
 
                             
             if (access):
@@ -177,7 +249,9 @@ def login():
     window1.close() 
 
     if (flag == 1):
-        logged_in_screen(0,values[0],num_users)    
+        logged_in_screen(user_num,values[0],num_users)
+    elif (flag == 2):
+        welcome_screen()
 
 
 def logged_in_screen (user_num,username,num_users):
@@ -185,14 +259,24 @@ def logged_in_screen (user_num,username,num_users):
   
     
     
+    if(pacemaker_connected):
+        connection_string = "Connected"
+        connection_colour = "Green"
+    else:
+        connection_string = "Disconnected"
+        connection_colour = "red"
+    
     layout1 = [
+        
+                
+                [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
                 [sg.Text(username, justification='center')], 
                 [sg.Button("AOO",size=(10,2))], 
                 [sg.Button("VOO",size=(10,2))],
                 [sg.Button("VVI",size=(10,2))], 
                 [sg.Button("AAI",size=(10,2))],
                 [sg.Button("View/Edit Parameters",size=(10,2))],
-                
+                [sg.Button("Go Back (Logout)",size=(10,2))]
               ]
 
      # Create the window
@@ -221,6 +305,9 @@ def logged_in_screen (user_num,username,num_users):
         elif(event == "View/Edit Parameters"):
             flag = 5
             break
+        elif(event == "Go Back (Logout)"):
+            flag = 6
+            break
         elif (event == sg.WIN_CLOSED):
             break
     
@@ -228,28 +315,136 @@ def logged_in_screen (user_num,username,num_users):
     window1.close()
     
     if(flag == 1):
-        VOO()
+        VOO(user_num,username,num_users)
     elif(flag == 2):
-        AOO()
+        AOO(user_num,username,num_users)
     elif(flag == 3):
-        VVI()
+        VVI(user_num,username,num_users)
     elif(flag == 4):
-        AAI()
+        AAI(user_num,username,num_users)
     elif (flag == 5):
-        display_and_edit_Info(user_num,num_users)
+        display_and_edit_Info(user_num,username,num_users)
+    elif(flag == 6):
+        login()
         
 
-def AOO(user_num):
-    pass
-def VOO(user_num):
-    pass
-def VVI(user_num):
-    pass
-def AAI(user_num):
-    pass
+def AOO(user_num,username,num_users):
+    layout1 = [
     
+    [sg.Button("Go Back",size=(10,2))]
+      ]
+    
+    # Create the window
+    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+       
+# Create an event loop
+    while True:
+   
+       # Read the event name and any inputs given
+       event, values = window1.read()
+       
+       # Sets flag to go to different pages depending on button click
+       flag = 0
+       if (event == "Go Back"):
+           flag = 1  
+           break
 
-def display_and_edit_Info(user_num,num_users):
+   
+   # CLose the window and go to pressed page
+    window1.close()
+   
+    if(flag == 1):
+        logged_in_screen (user_num,username,num_users)
+        pass
+    
+    
+def VOO(user_num,username,num_users):
+   layout1 = [
+    
+    [sg.Button("Go Back",size=(10,2))]
+      ]
+    
+    # Create the window
+   window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+       
+     # Create an event loop
+   while True:
+   
+       # Read the event name and any inputs given
+       event, values = window1.read()
+       
+       # Sets flag to go to different pages depending on button click
+       flag = 0
+       if (event == "Go Back"):
+           flag = 1  
+           break
+
+   
+   # CLose the window and go to pressed page
+   window1.close()
+   
+   if(flag == 1):
+        logged_in_screen (user_num,username,num_users)
+        pass
+def VVI(user_num,username,num_users):
+    layout1 = [
+    
+    [sg.Button("Go Back",size=(10,2))]
+      ]
+    
+    # Create the window
+    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+       
+    # Create an event loop
+    while True:
+   
+       # Read the event name and any inputs given
+       event, values = window1.read()
+       
+       # Sets flag to go to different pages depending on button click
+       flag = 0
+       if (event == "Go Back"):
+           flag = 1  
+           break
+
+   
+   # CLose the window and go to pressed page
+    window1.close()
+   
+    if(flag == 1):
+        logged_in_screen (user_num,username,num_users)
+        pass
+    
+def AAI(user_num,username,num_users):
+    layout1 = [
+    
+    [sg.Button("Go Back",size=(10,2))]
+      ]
+    
+    # Create the window
+    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+       
+    # Create an event loop
+    while True:
+   
+       # Read the event name and any inputs given
+       event, values = window1.read()
+       
+       # Sets flag to go to different pages depending on button click
+       flag = 0
+       if (event == "Go Back"):
+           flag = 1  
+           break
+
+   
+   # CLose the window and go to pressed page
+    window1.close()
+   
+    if(flag == 1):
+        logged_in_screen (user_num,username,num_users)
+        pass
+
+def display_and_edit_Info(user_num,username,num_users):
     
     
     
@@ -258,30 +453,41 @@ def display_and_edit_Info(user_num,num_users):
         #login_info = open("Login_Info.txt","r+") 
         count = 0
         for line in filestream:
-
+           # print("BBBBB: " + str(user_num))
             currentline = line.split(",")
             
             if (count == user_num):
+                if(pacemaker_connected):
+                    connection_string = "Connected"
+                    connection_colour = "Green"
+                else:
+                    connection_string = "Disconnected"
+                    connection_colour = "red"
+                
                 layout1 = [
+                    
+                            
+                [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
                 [sg.Text("Set Patient Variables", justification='center')],    
                 [sg.Text('Enter new data to replace existing values')],
-                [sg.Text('Lower Rate Limit: ' + currentline[0], size =(20, 1))],
+                [sg.Text('Lower Rate Limit: ' + currentline[0], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],
-                [sg.Text('Upper Rate Limit: ' + currentline[1], size =(20, 1))],
+                [sg.Text('Upper Rate Limit: ' + currentline[1], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],
-                [sg.Text('Atrial Amplitude: ' + currentline[2], size =(20, 1))],
+                [sg.Text('Atrial Amplitude: ' + currentline[2], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],
-                [sg.Text('Atrial Pulse Width: ' + currentline[3], size =(20, 1))],
+                [sg.Text('Atrial Pulse Width: ' + currentline[3], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],
-                [sg.Text('Ventricular Amplitude: ' + currentline[4], size =(20, 1))],
+                [sg.Text('Ventricular Amplitude: ' + currentline[4], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],
-                [sg.Text('Ventricular Pulse Width: ' + currentline[5], size =(20, 1))],
+                [sg.Text('Ventricular Pulse Width: ' + currentline[5], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],     
-                [sg.Text('VRP: ' + currentline[6], size =(20, 1))],
+                [sg.Text('VRP: ' + currentline[6], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],
-                [sg.Text('ARP: ' + currentline[7], size =(20, 1))],
+                [sg.Text('ARP: ' + currentline[7], size =(25, 1))],
                 [sg.Text( size =(15, 1)), sg.InputText()],
                 [sg.Button("PRESS TO CONFIRM EDITS",size=(10,3))],
+                [sg.Button("Go Back",size=(10,3))]
                 ]
             count+=1
 
@@ -291,10 +497,15 @@ def display_and_edit_Info(user_num,num_users):
 
     # Create an event loop
     flag = 0
+    
     while True:
+        isLetter = False
         event, values = window1.read()
        
-        
+        if (event == "Go Back"):  
+            flag = 2
+            break
+       
        
         if (event == "PRESS TO CONFIRM EDITS"):    
             flag = 1
@@ -317,30 +528,43 @@ def display_and_edit_Info(user_num,num_users):
                             if (values[i] == ""):
                                 write_info[count].append(currentline[i])
                             else:
-                                write_info[count].append(values[i])
+                               # write_info[count].append(values[i])
+                                if (values[i].isnumeric()):
+                                    if(i != 7):
+                                        write_info[count].append(values[i])
+                                    else:
+                                        write_info[count].append(values[i] + "\n")
+                                else:
+                                    isLetter = True
+                                    break
                     
                     count+=1
             print(write_info)
-            with open("Heart_Info.txt", "w") as filestream:
-                
-              #  write_info = [ [] for i in range(num_users)]
-                
-                #login_info = open("Login_Info.txt","r+") 
-                count = 0
-                for i in range(num_users):
-                    
-                    for j in range(8):
-                        filestream.write(write_info[i][j])
-                        
-                        if(j == 7):
-                            pass
-                            #filestream.write("\n")
-                        else:
-                            filestream.write(",")
-
-                break
             
-            pass
+            if (not(isLetter)):
+            
+                with open("Heart_Info.txt", "w") as filestream:
+                    
+                  #  write_info = [ [] for i in range(num_users)]
+                    
+                    #login_info = open("Login_Info.txt","r+") 
+                    count = 0
+                    for i in range(num_users):
+                        
+                        for j in range(8):
+                            filestream.write(write_info[i][j])
+                            
+                            if (j != 7):
+                                filestream.write(",")
+    
+                    break
+                
+                pass
+            else:
+                sg.Popup('A non numeric character was entered, please try again!', keep_on_top=True)
+                flag = 1
+                #break
+            
         elif (event == sg.WIN_CLOSED):
            
             break
@@ -348,8 +572,9 @@ def display_and_edit_Info(user_num,num_users):
     window1.close()  
     
     if(flag == 1):
-        display_and_edit_Info(user_num,num_users)
-    
+        display_and_edit_Info(user_num,username,num_users)
+    elif (flag == 2):
+        logged_in_screen(user_num,username,num_users)
 sg.theme('DarkAmber')
 welcome_screen()
 

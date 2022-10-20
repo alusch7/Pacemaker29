@@ -2,3 +2,6 @@ Ranuja,password
 admin,admin
 abc,123
 asdf,321
+qwerty,123
+asdfgh,888
+Bob,999
