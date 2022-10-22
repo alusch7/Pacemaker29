@@ -4,7 +4,7 @@ import PySimpleGUI as sg
 pacemaker_connected = False
 # Welcome Screen function
 def welcome_screen():
-    print("CCCC")
+    #print("CCCC")
     # Create Text and buttons
     if(pacemaker_connected):
         connection_string = "Connected"
@@ -24,7 +24,7 @@ def welcome_screen():
               ]
 
     # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("Welcome", layout1,size=(1600, 800) ,resizable=True)
     #sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
     # Create an event loop
     while True:
@@ -49,7 +49,7 @@ def welcome_screen():
     
     if(flag == 1):
         registry()
-        print("BBBBB")
+       # print("BBBBB")
     elif(flag == 2):
         login()
         
@@ -92,14 +92,14 @@ def registry():
     login_info = open("Login_Info.txt","a+") 
     heart_info = open("Heart_Info.txt","a+") 
     num_users_file = open("NUM_USERS.txt","r")
-    print("Number of users: ")
+    #print("Number of users: ")
     num_users = int(num_users_file.readline())
-    print(num_users)
+    #print(num_users)
     num_users_file.close()
     
     
     # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("Registry", layout1,size=(1600, 800) ,resizable=True)
     username_exists = False
     # Create an event loop
     while True:
@@ -111,7 +111,7 @@ def registry():
         # Check if 10 users have been added
         if (event == "Go Back"):
             flag = 1
-            print("AAAAAA")
+            #print("AAAAAA")
             break
         
         if (num_users < 10):
@@ -125,7 +125,7 @@ def registry():
                         currentline = line.split(",")
                        # currentline = line.split("\n")
                         # Check the given username and password against all in the file
-                        print(currentline[0])
+                       # print(currentline[0])
                        # print(currentline[1])
                       #  print(values[0])
                       #  print(values[1])
@@ -188,12 +188,12 @@ def login():
     
     login_info = open("Login_Info.txt","r+") 
     num_users_file = open("NUM_USERS.txt","r")
-    print("Number of users: ")
+    #print("Number of users: ")
     num_users = int(num_users_file.readline())
-    print(num_users)
+    #print(num_users)
 
     # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("Login", layout1,size=(1600, 800) ,resizable=True)
 
     
     # Create an event loop
@@ -229,12 +229,12 @@ def login():
             if (access):
                 sg.Popup('ACCESS GRANTED', keep_on_top=True)
                 
-                print("ACCESS GRANTED")
+                #print("ACCESS GRANTED")
                 flag = 1
                 break
             else:
                 sg.Popup('ACCESS DENIED', keep_on_top=True)
-                print("ACCESS DENIED")
+                #print("ACCESS DENIED")
             
         
         
@@ -280,7 +280,7 @@ def logged_in_screen (user_num,username,num_users):
               ]
 
      # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("User Menu", layout1,size=(1600, 800) ,resizable=True)
     
      # Create an event loop
     while True:
@@ -335,7 +335,7 @@ def AOO(user_num,username,num_users):
       ]
     
     # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("AOO", layout1,size=(1600, 800) ,resizable=True)
        
 # Create an event loop
     while True:
@@ -365,7 +365,7 @@ def VOO(user_num,username,num_users):
       ]
     
     # Create the window
-   window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+   window1 = sg.Window("VOO", layout1,size=(1600, 800) ,resizable=True)
        
      # Create an event loop
    while True:
@@ -393,7 +393,7 @@ def VVI(user_num,username,num_users):
       ]
     
     # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("VVI", layout1,size=(1600, 800) ,resizable=True)
        
     # Create an event loop
     while True:
@@ -422,7 +422,7 @@ def AAI(user_num,username,num_users):
       ]
     
     # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("AAI", layout1,size=(1600, 800) ,resizable=True)
        
     # Create an event loop
     while True:
@@ -493,7 +493,7 @@ def display_and_edit_Info(user_num,username,num_users):
 
 
     # Create the window
-    window1 = sg.Window("Demo", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("View Data", layout1,size=(1600, 800) ,resizable=True)
 
     # Create an event loop
     flag = 0
@@ -539,7 +539,7 @@ def display_and_edit_Info(user_num,username,num_users):
                                     break
                     
                     count+=1
-            print(write_info)
+            #print(write_info)
             
             if (not(isLetter)):
             
@@ -575,6 +575,7 @@ def display_and_edit_Info(user_num,username,num_users):
         display_and_edit_Info(user_num,username,num_users)
     elif (flag == 2):
         logged_in_screen(user_num,username,num_users)
+
 sg.theme('DarkAmber')
 welcome_screen()
 
