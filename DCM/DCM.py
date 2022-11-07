@@ -3,9 +3,11 @@
 #Group 29 - DCM GUI for Pacemaker - 3K04
 
 import PySimpleGUI as sg
+import sys
+import os
+from DCM_Functions import *
 
-
-pacemaker_connected = False
+pacemaker_connected = True
 
 # Welcome Screen function
 def welcome_screen():
@@ -13,12 +15,16 @@ def welcome_screen():
     # Create Text and buttons
 
     #Checking the connection status of the Pacemaker to the program
-    if(pacemaker_connected):
-        connection_string = "Connected"
-        connection_colour = "Green"
-    else:
-        connection_string = "Disconnected"
-        connection_colour = "red"
+    #if(pacemaker_connected):
+    #    connection_string = "Connected"
+    #    connection_colour = "Green"
+    #else:
+    #   connection_string = "Disconnected"
+    #    connection_colour = "red"
+
+    #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+    connection_string = get_connection_string(pacemaker_connected)
+    connection_colour = get_connection_color(pacemaker_connected)
     
     layout1 = [
         #Creating modules for the welcome screen
