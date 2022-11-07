@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
 
+#Group 29 - DCM GUI for Pacemaker - 3K04
+
 import PySimpleGUI as sg
+
+
 pacemaker_connected = False
+
 # Welcome Screen function
 def welcome_screen():
     #print("CCCC")
     # Create Text and buttons
+
+    #Checking the connection status of the Pacemaker to the program
     if(pacemaker_connected):
         connection_string = "Connected"
         connection_colour = "Green"
@@ -14,8 +21,7 @@ def welcome_screen():
         connection_colour = "red"
     
     layout1 = [
-        
-                
+        #Creating modules for the welcome screen
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
                 [sg.Text("Welcome Page", justification='center')], 
                 [sg.Button("Register New User",size=(10,2))], 
@@ -64,7 +70,7 @@ def registry():
         connection_colour = "red"
     
     layout1 = [
-        
+    #Creating modules for the Registering of the Parameters
                 
     [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
      [sg.Text("Register New User", justification='center')],    
@@ -114,7 +120,7 @@ def registry():
             #print("AAAAAA")
             break
         
-        if (num_users < 10):
+        if (num_users < 10): #Limiting the number of users to 10
             if (event == "Submit"):
                
                 # If not append the list of users and increment number of users by 1
@@ -134,7 +140,7 @@ def registry():
                             username_exists = True
 
                         
-                    if(not(username_exists)):
+                    if(not(username_exists)): # Checking if the username exists -> Writes the value if false
                         login_info.write(values[0] + "," + values[1] + "\n")
                         heart_info.write(values[2] + "," + values[3] + "," + values[4] + "," + values[5] + "," + values[6] + "," + values[7] + "," + values[8] + "," + values[9] + "\n")
                         num_users_file = open("NUM_USERS.txt","w")
@@ -150,7 +156,7 @@ def registry():
                     
                 
                 break                
-            elif (event == sg.WIN_CLOSED):
+            elif (event == sg.WIN_CLOSED): #When the window is closed will break out and finish the window
                
                 break
         else:
@@ -162,14 +168,16 @@ def registry():
     login_info.close()
     heart_info.close()
     num_users_file.close()
-    if(flag == 1):
+
+    if(flag == 1): #Flag determines the next window to open
         welcome_screen()
     elif (flag == 2):
         registry()
         
     
     
-def login():
+def login(): #Creating the welcome screen for the login page
+    
     if(pacemaker_connected):
         connection_string = "Connected"
         connection_colour = "Green"
@@ -202,11 +210,11 @@ def login():
        
         flag = 0
         
-        if (event == "Go Back"):
+        if (event == "Go Back"): #Checks if the back button has been pressed
             flag = 2
             break
         
-        if (event == "Submit"):
+        if (event == "Submit"): #Checks if the submit button has been pressed
     
             access = False
             with open("Login_Info.txt", "r") as filestream:
@@ -226,7 +234,7 @@ def login():
                     user_num += 1
 
                             
-            if (access):
+            if (access): #Is the password and the username the same?
                 sg.Popup('ACCESS GRANTED', keep_on_top=True)
                 
                 #print("ACCESS GRANTED")
@@ -255,8 +263,8 @@ def login():
 
 
 def logged_in_screen (user_num,username,num_users):
-    
-  
+
+    #Creates the "logged in screen" page after the user has successfully logged in.
     
     
     if(pacemaker_connected):
@@ -314,7 +322,9 @@ def logged_in_screen (user_num,username,num_users):
     # CLose the window and go to pressed page
     window1.close()
     
-    if(flag == 1):
+    #Begins checking the button pressed, each statement will open a different function and send the necessary parameters
+
+    if(flag == 1): 
         VOO(user_num,username,num_users)
     elif(flag == 2):
         AOO(user_num,username,num_users)
@@ -328,7 +338,7 @@ def logged_in_screen (user_num,username,num_users):
         login()
         
 
-def AOO(user_num,username,num_users):
+def AOO(user_num,username,num_users): #AOO Opearting Mode Window
     layout1 = [
     
     [sg.Button("Go Back",size=(10,2))]
@@ -358,7 +368,7 @@ def AOO(user_num,username,num_users):
         pass
     
     
-def VOO(user_num,username,num_users):
+def VOO(user_num,username,num_users): #VOO Operating Mode Window
    layout1 = [
     
     [sg.Button("Go Back",size=(10,2))]
@@ -386,7 +396,7 @@ def VOO(user_num,username,num_users):
    if(flag == 1):
         logged_in_screen (user_num,username,num_users)
         pass
-def VVI(user_num,username,num_users):
+def VVI(user_num,username,num_users): #VVI Operating Mode Window
     layout1 = [
     
     [sg.Button("Go Back",size=(10,2))]
@@ -415,7 +425,7 @@ def VVI(user_num,username,num_users):
         logged_in_screen (user_num,username,num_users)
         pass
     
-def AAI(user_num,username,num_users):
+def AAI(user_num,username,num_users): #AAI Operating Mode Window
     layout1 = [
     
     [sg.Button("Go Back",size=(10,2))]
@@ -444,8 +454,8 @@ def AAI(user_num,username,num_users):
         logged_in_screen (user_num,username,num_users)
         pass
 
-def display_and_edit_Info(user_num,username,num_users):
-    
+def display_and_edit_Info(user_num,username,num_users): 
+    #Creates the window where one can change and edit all the necessary parameters for the patient
     
     
     with open("Heart_Info.txt", "r") as filestream:
@@ -541,7 +551,7 @@ def display_and_edit_Info(user_num,username,num_users):
                     count+=1
             #print(write_info)
             
-            if (not(isLetter)):
+            if (not(isLetter)): #Checks if the value is indeed a number and not some random value
             
                 with open("Heart_Info.txt", "w") as filestream:
                     
@@ -577,6 +587,8 @@ def display_and_edit_Info(user_num,username,num_users):
         logged_in_screen(user_num,username,num_users)
 
 sg.theme('DarkAmber')
+
+#The program begins with the Welcome Screen Page
 welcome_screen()
 
 
