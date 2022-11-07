@@ -540,30 +540,45 @@ def display_and_edit_Info(user_num,username,num_users):
                     
                     count+=1
             #print(write_info)
-            
-            if (not(isLetter)):
-            
-                with open("Heart_Info.txt", "w") as filestream:
-                    
-                  #  write_info = [ [] for i in range(num_users)]
-                    
-                    #login_info = open("Login_Info.txt","r+") 
-                    count = 0
-                    for i in range(num_users):
+            if(values [0] > 50): #LRL > 50
+                if (values [1] < 130): # URL < 130
+                    if (values[0] > values [1]):
+                        if (not(isLetter)):
                         
-                        for j in range(8):
-                            filestream.write(write_info[i][j])
-                            
-                            if (j != 7):
-                                filestream.write(",")
-    
-                    break
+                            with open("Heart_Info.txt", "w") as filestream:
+                                
+                              #  write_info = [ [] for i in range(num_users)]
+                                
+                                #login_info = open("Login_Info.txt","r+") 
+                                count = 0
+                                for i in range(num_users):
+                                    
+                                    for j in range(8):
+                                        filestream.write(write_info[i][j])
+                                        
+                                        if (j != 7):
+                                            filestream.write(",")
                 
-                pass
+                                break
+                            
+                            pass
+                        else:
+                            sg.Popup('A non numeric character was entered, please try again!', keep_on_top=True)
+                            flag = 1
+                            #break
+                    else:
+                        sg.Popup('Lower rate limit cannot be higher than the upper rate limit, please try again!', keep_on_top=True)
+                        flag = 1
+                        #break        
+                else:
+                    sg.Popup('Upper rate limit is too high, please try again!', keep_on_top=True)
+                    flag = 1
+                    #break    
+                    
             else:
-                sg.Popup('A non numeric character was entered, please try again!', keep_on_top=True)
+                sg.Popup('Lower rate limit is too low, please try again!', keep_on_top=True)
                 flag = 1
-                #break
+                
             
         elif (event == sg.WIN_CLOSED):
            
