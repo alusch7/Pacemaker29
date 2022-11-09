@@ -4,6 +4,17 @@
 
 import PySimpleGUI as sg
 
+import serial
+
+s = serial.Serial('COM4',115200,timeout = 10)
+#s = ser.read(100)
+print("Opening: " + s.name)
+
+for i in range(10):
+    s.write(123)
+
+
+s.close()
 
 pacemaker_connected = False
 
@@ -76,7 +87,7 @@ def registry():
      [sg.Text("Register New User", justification='center')],    
     [sg.Text('Please enter a new username and password')],
     [sg.Text('username', size =(15, 1)), sg.InputText()],
-    [sg.Text('password', size =(15, 1)), sg.InputText()],
+    [sg.Text('password', size =(15, 1)), sg.InputText(key='Password', password_char='*')],
     
     [sg.Text("Set Patient Variables", justification='center')],    
    [sg.Text('Please enter the user\'s heart information')],
@@ -119,6 +130,7 @@ def registry():
             flag = 1
             #print("AAAAAA")
             break
+        isLetter = False
         
         if (num_users < 10): #Limiting the number of users to 10
             if (event == "Submit"):
@@ -126,34 +138,69 @@ def registry():
                 # If not append the list of users and increment number of users by 1
                 
                 with open("Login_Info.txt", "r") as filestream:  
+                    
                     for line in filestream:
                         
                         currentline = line.split(",")
-                       # currentline = line.split("\n")
+                      
                         # Check the given username and password against all in the file
-                       # print(currentline[0])
-                       # print(currentline[1])
-                      #  print(values[0])
-                      #  print(values[1])
+                       
+                        
+                       
+                        
                         if (currentline[0] == values[0]):
             
                             username_exists = True
+                            
+                    for i in range (0,8):
+                        if(not(values[i].isnumeric())):
+                            isLetter = True
 
-                        
-                    if(not(username_exists)): # Checking if the username exists -> Writes the value if false
-                        login_info.write(values[0] + "," + values[1] + "\n")
-                        heart_info.write(values[2] + "," + values[3] + "," + values[4] + "," + values[5] + "," + values[6] + "," + values[7] + "," + values[8] + "," + values[9] + "\n")
-                        num_users_file = open("NUM_USERS.txt","w")
-                        num_users_file.write(str(num_users+1))
-  
-                        sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
-                        flag = 1
-                        break
+                    if(len(values[0]) >= 3):
+                        if(len(values[1]) >= 3):
+                            if(values [0] > 50): #LRL > 50
+                                if (values [1] < 130): # URL < 130
+                                    if (values[0] > values [1]):
+                                        
+    
+                            
+                                        if (not(isLetter)): #Checks if the value is indeed a number and not some random value
+                                            if(not(username_exists)): # Checking if the username exists -> Writes the value if false
+                                                login_info.write(values[0] + "," + values[1] + "\n")
+                                                heart_info.write(values[2] + "," + values[3] + "," + values[4] + "," + values[5] + "," + values[6] + "," + values[7] + "," + values[8] + "," + values[9] + "\n")
+                                                num_users_file = open("NUM_USERS.txt","w")
+                                                num_users_file.write(str(num_users+1))
+                          
+                                                sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
+                                                flag = 1
+                                                break
+                                            else:
+                                                sg.Popup('Username already exists. Try a new one.', keep_on_top=True)
+                                                flag = 2
+                                                break
+                                            
+                                        else:
+                                            sg.Popup('A non numeric character was entered, please try again!', keep_on_top=True)
+                                            flag = 2
+                                            #break
+                                    else:
+                                        sg.Popup('Lower rate limit cannot be higher than the upper rate limit, please try again!', keep_on_top=True)
+                                        flag = 2
+                                        #break        
+                                else:
+                                    sg.Popup('Upper rate limit is too high, please try again!', keep_on_top=True)
+                                    flag = 2
+                                    #break    
+                                    
+                            else:
+                                sg.Popup('Lower rate limit is too low, please try again!', keep_on_top=True)
+                                flag = 2
+                        else:
+                            sg.Popup('Password is too short, please try again!', keep_on_top=True)
+                            flag = 2           
                     else:
-                        sg.Popup('Username already exists. Try a new one.', keep_on_top=True)
+                        sg.Popup('Username is too short, please try again!', keep_on_top=True)
                         flag = 2
-                        break
-                    
                 
                 break                
             elif (event == sg.WIN_CLOSED): #When the window is closed will break out and finish the window
