@@ -4,7 +4,6 @@
 **Group Members**
 - [Alden Luscher](https://github.com/alusch7)
 - [Andrew Gurges](https://github.com/gurgea1)
-- [Hussein Al Rafea](https://github.com/halrafea)
 - [Dayyan Hashmi](https://github.com/hashmid)
 - [Ranuja Pinnaduwage](https://github.com/pinnaduk)
 
