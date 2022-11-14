@@ -9,7 +9,7 @@ from DCM_Functions import *
 
 
 import serial
-
+'''
 s = serial.Serial('COM4',115200,timeout = 10)
 #s = ser.read(100)
 print("Opening: " + s.name)
@@ -19,7 +19,7 @@ for i in range(10):
 
 
 s.close()
-
+'''
 pacemaker_connected = False
 
 #pacemaker_connected = True
@@ -113,6 +113,13 @@ def registry():
     [sg.Text('Pulse Width')],
     [sg.Text('VRP', size =(15, 1)), sg.InputText()],
     [sg.Text('ARP', size =(15, 1)), sg.InputText()],
+    [sg.Text('PVARP', size =(15, 1)), sg.InputText()],
+    [sg.Text('Hysteresis', size =(15, 1)), sg.InputText()],
+    [sg.Text('Rate Smoothing', size =(15, 1)), sg.InputText()],
+    [sg.Text('Activity Threshold', size =(15, 1)), sg.InputText()],
+    [sg.Text('Reaction Time', size =(15, 1)), sg.InputText()],
+    [sg.Text('Response Factor', size =(15, 1)), sg.InputText()],
+    [sg.Text('Recovery Time', size =(15, 1)), sg.InputText()],
     [sg.Submit(), sg.Button("Go Back",size=(7,1))]
     ]
     
