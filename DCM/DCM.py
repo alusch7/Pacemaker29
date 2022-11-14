@@ -90,6 +90,7 @@ def registry():
    [sg.Text('Please enter the user\'s heart information')],
     [sg.Text('Lower Rate Limit', size =(15, 1)), sg.InputText()],
     [sg.Text('Upper Rate Limit', size =(15, 1)), sg.InputText()],
+    [sg.Text('Maximum Sensor Rate', size =(15, 1)), sg.InputText()],
     [sg.Text('Atrial Amplitude', size =(15, 1)), sg.InputText()],
     [sg.Text('Atrial Pulse Width', size =(15, 1)), sg.InputText()],
     #[sg.Text('')],
@@ -327,6 +328,8 @@ def logged_in_screen (user_num,username,num_users):
                 [sg.Button("VOO",size=(10,2))],
                 [sg.Button("VVI",size=(10,2))], 
                 [sg.Button("AAI",size=(10,2))],
+                [sg.Button("AOOR",size=(10,2))], 
+                [sg.Button("VOOR",size=(10,2))],
                 [sg.Button("View/Edit Parameters",size=(10,2))],
                 [sg.Button("Go Back (Logout)",size=(10,2))]
               ]
@@ -354,11 +357,17 @@ def logged_in_screen (user_num,username,num_users):
         elif(event == "AAI"):
             flag = 4
             break
-        elif(event == "View/Edit Parameters"):
+        elif(event == "AOOR"):
             flag = 5
             break
-        elif(event == "Go Back (Logout)"):
+        elif(event == "VOOR"):
             flag = 6
+            break
+        elif(event == "View/Edit Parameters"):
+            flag = 7
+            break
+        elif(event == "Go Back (Logout)"):
+            flag = 8
             break
         elif (event == sg.WIN_CLOSED):
             break
@@ -376,15 +385,20 @@ def logged_in_screen (user_num,username,num_users):
         VVI(user_num,username,num_users)
     elif(flag == 4):
         AAI(user_num,username,num_users)
-    elif (flag == 5):
-        display_and_edit_Info(user_num,username,num_users)
+    elif(flag == 5):
+        AOOR(user_num,username,num_users)
     elif(flag == 6):
+        VOOR(user_num,username,num_users)
+    elif(flag == 7):
+        display_and_edit_Info(user_num,username,num_users)
+    elif(flag == 8):
         login()
         
 
 def AOO(user_num,username,num_users): #AOO Opearting Mode Window
     layout1 = [
     
+    [sg.Button("Begin AOO",size=(10,2))],
     [sg.Button("Go Back",size=(10,2))]
       ]
     
@@ -399,8 +413,12 @@ def AOO(user_num,username,num_users): #AOO Opearting Mode Window
        
        # Sets flag to go to different pages depending on button click
        flag = 0
-       if (event == "Go Back"):
-           flag = 1  
+       
+       if (event == "Begin AOO"):
+           flag = 1
+           break
+       elif (event == "Go Back"):
+           flag = 2  
            break
 
    
@@ -408,13 +426,15 @@ def AOO(user_num,username,num_users): #AOO Opearting Mode Window
     window1.close()
    
     if(flag == 1):
+        send_data(user_num,username,num_users)
+    elif (flag == 2):
         logged_in_screen (user_num,username,num_users)
-        pass
     
     
 def VOO(user_num,username,num_users): #VOO Operating Mode Window
    layout1 = [
     
+    [sg.Button("Begin VOO",size=(10,2))],
     [sg.Button("Go Back",size=(10,2))]
       ]
     
@@ -423,26 +443,35 @@ def VOO(user_num,username,num_users): #VOO Operating Mode Window
        
      # Create an event loop
    while True:
-   
-       # Read the event name and any inputs given
-       event, values = window1.read()
-       
-       # Sets flag to go to different pages depending on button click
-       flag = 0
-       if (event == "Go Back"):
-           flag = 1  
-           break
+  
+      # Read the event name and any inputs given
+      event, values = window1.read()
+      
+      # Sets flag to go to different pages depending on button click
+      flag = 0
+      
+      if (event == "Begin VOO"):
+          flag = 1
+          break
+      elif (event == "Go Back"):
+          flag = 2  
+          break
 
-   
-   # CLose the window and go to pressed page
+  
+  # CLose the window and go to pressed page
    window1.close()
-   
+  
    if(flag == 1):
-        logged_in_screen (user_num,username,num_users)
-        pass
+       send_data(user_num,username,num_users)
+   elif (flag == 2):
+       logged_in_screen (user_num,username,num_users)
+    
+    
+    
 def VVI(user_num,username,num_users): #VVI Operating Mode Window
     layout1 = [
     
+    [sg.Button("Begin VVI",size=(10,2))],
     [sg.Button("Go Back",size=(10,2))]
       ]
     
@@ -457,8 +486,12 @@ def VVI(user_num,username,num_users): #VVI Operating Mode Window
        
        # Sets flag to go to different pages depending on button click
        flag = 0
-       if (event == "Go Back"):
-           flag = 1  
+       
+       if (event == "Begin VVI"):
+           flag = 1
+           break
+       elif (event == "Go Back"):
+           flag = 2  
            break
 
    
@@ -466,12 +499,14 @@ def VVI(user_num,username,num_users): #VVI Operating Mode Window
     window1.close()
    
     if(flag == 1):
+        send_data(user_num,username,num_users)
+    elif (flag == 2):
         logged_in_screen (user_num,username,num_users)
-        pass
     
 def AAI(user_num,username,num_users): #AAI Operating Mode Window
     layout1 = [
     
+    [sg.Button("Begin AAI",size=(10,2))],
     [sg.Button("Go Back",size=(10,2))]
       ]
     
@@ -486,8 +521,12 @@ def AAI(user_num,username,num_users): #AAI Operating Mode Window
        
        # Sets flag to go to different pages depending on button click
        flag = 0
-       if (event == "Go Back"):
-           flag = 1  
+       
+       if (event == "Begin AAI"):
+           flag = 1
+           break
+       elif (event == "Go Back"):
+           flag = 2  
            break
 
    
@@ -495,8 +534,109 @@ def AAI(user_num,username,num_users): #AAI Operating Mode Window
     window1.close()
    
     if(flag == 1):
+        send_data(user_num,username,num_users)
+    elif (flag == 2):
         logged_in_screen (user_num,username,num_users)
-        pass
+    
+def AOOR(user_num,username,num_users): #AAI Operating Mode Window
+    layout1 = [
+    [sg.Button("Begin AOOR",size=(10,2))],
+    [sg.Button("Go Back",size=(10,2))]
+      ]
+    
+    # Create the window
+    window1 = sg.Window("AAI", layout1,size=(1600, 800) ,resizable=True)
+       
+    # Create an event loop
+    while True:
+   
+       # Read the event name and any inputs given
+       event, values = window1.read()
+       
+       # Sets flag to go to different pages depending on button click
+       flag = 0
+       
+       if (event == "Begin AOOR"):
+           flag = 1
+           break
+       elif (event == "Go Back"):
+           flag = 2  
+           break
+
+   
+   # CLose the window and go to pressed page
+    window1.close()
+   
+    if(flag == 1):
+        send_data(user_num,username,num_users)
+    elif (flag == 2):
+        logged_in_screen (user_num,username,num_users)
+
+def VOOR(user_num,username,num_users): #AAI Operating Mode Window
+    layout1 = [
+    [sg.Button("Begin VOOR",size=(10,2))],
+    [sg.Button("Go Back",size=(10,2))]
+      ]
+    
+    # Create the window
+    window1 = sg.Window("AAI", layout1,size=(1600, 800) ,resizable=True)
+       
+    # Create an event loop
+    while True:
+   
+       # Read the event name and any inputs given
+       event, values = window1.read()
+       
+       # Sets flag to go to different pages depending on button click
+       flag = 0
+       
+       if (event == "Begin VOOR"):
+           flag = 1
+           break
+       elif (event == "Go Back"):
+           flag = 2  
+           break
+
+   
+   # CLose the window and go to pressed page
+    window1.close()
+   
+    if(flag == 1):
+        send_data(user_num,username,num_users)
+    elif (flag == 2):
+        logged_in_screen (user_num,username,num_users)
+
+
+def send_data (user_num,username,num_users):
+    
+    
+    print("AAAAAAA")
+    
+    s = serial.Serial('COM4',115200,timeout = 10)
+    #s = ser.read(100)
+    print("Opening: " + s.name)
+
+    with open("Heart_Info.txt", "r") as filestream:
+        count = 0
+        
+        if (count == user_num):
+            for line in filestream:
+         
+                currentline = line.split(",")
+                
+                
+                for i in range(15):
+                    
+                    write_line = currentline.encode()
+                    s.write(write_line)
+            
+        else:
+            count += 1
+
+
+    s.close()
+    
+
 
 def display_and_edit_Info(user_num,username,num_users): 
     #Creates the window where one can change and edit all the necessary parameters for the patient
