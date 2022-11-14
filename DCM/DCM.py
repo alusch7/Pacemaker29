@@ -27,23 +27,13 @@ pacemaker_connected = False
 
 # Welcome Screen function
 def welcome_screen():
-    #print("CCCC")
-    # Create Text and buttons
-
-    #Checking the connection status of the Pacemaker to the program
-    #if(pacemaker_connected):
-    #    connection_string = "Connected"
-    #    connection_colour = "Green"
-    #else:
-    #   connection_string = "Disconnected"
-    #    connection_colour = "red"
 
     #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
     connection_string = get_connection_string(pacemaker_connected)
     connection_colour = get_connection_color(pacemaker_connected)
     
     layout1 = [
-        #Creating modules for the welcome screen
+    #Creating modules for the welcome screen
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
                 [sg.Text("Welcome Page", justification='center')], 
                 [sg.Button("Register New User",size=(10,2))], 
@@ -53,7 +43,7 @@ def welcome_screen():
 
     # Create the window
     window1 = sg.Window("Welcome", layout1,size=(1600, 800) ,resizable=True)
-    #sg.Popup('SUCCESFULLY REGISTERED', keep_on_top=True)
+
     # Create an event loop
     while True:
         
@@ -83,14 +73,10 @@ def welcome_screen():
         
 def registry():
    
-    # Ask User to enter new user information   
-    if(pacemaker_connected):
-        connection_string = "Connected"
-        connection_colour = "Green"
-    else:
-        connection_string = "Disconnected"
-        connection_colour = "red"
-    
+    #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+    connection_string = get_connection_string(pacemaker_connected)
+    connection_colour = get_connection_color(pacemaker_connected)
+
     layout1 = [
     #Creating modules for the Registering of the Parameters
                 
@@ -236,12 +222,9 @@ def registry():
     
 def login(): #Creating the welcome screen for the login page
     
-    if(pacemaker_connected):
-        connection_string = "Connected"
-        connection_colour = "Green"
-    else:
-        connection_string = "Disconnected"
-        connection_colour = "red"
+    #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+    connection_string = get_connection_string(pacemaker_connected)
+    connection_colour = get_connection_color(pacemaker_connected)
     
     layout1 = [
     [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
@@ -324,13 +307,9 @@ def logged_in_screen (user_num,username,num_users):
 
     #Creates the "logged in screen" page after the user has successfully logged in.
     
-    
-    if(pacemaker_connected):
-        connection_string = "Connected"
-        connection_colour = "Green"
-    else:
-        connection_string = "Disconnected"
-        connection_colour = "red"
+    #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+    connection_string = get_connection_string(pacemaker_connected)
+    connection_colour = get_connection_color(pacemaker_connected)
     
     layout1 = [
         

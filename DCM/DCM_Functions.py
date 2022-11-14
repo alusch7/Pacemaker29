@@ -18,3 +18,4 @@ def get_connection_color(pacemaker_connected):
     else:
         connection_colour = "red"
     return connection_colour
+
