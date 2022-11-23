@@ -24,8 +24,9 @@ def get_connection_color(pacemaker_connected):
 
 def recieve_data():
 
-    FRDM_PORT = 'COM3'
-    SYNC = b'\x16'
+    FRDM_PORT = '/dev/cu.usbmodem1444203'
+    SYNC = b'\x22'
+    Start = b'\x16'
     FN_CODE = b'\x55'
     MODE = struct.pack("B", 1) #For VOO
     LRL = struct.pack("B", 1) 
@@ -34,22 +35,28 @@ def recieve_data():
     AtrPW = struct.pack("B", 1)
     VentPW = struct.pack("B", 1)
     AtrSens = struct.pack("B", 1)
+    VentSens = struct.pack("B", 1)
     VRP = struct.pack("H", 10) #Unsigned Short Size 2
     ARP = struct.pack("H", 10)
 
-    Signal_echo = Start + SYNC
+    Signal_echo = Start + SYNC + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+    i = 0
 
     with serial.Serial(FRDM_PORT, 115200) as pacemaker:
         pacemaker.write(Signal_echo)
         data = pacemaker.read(18)
         M = data[0]
         L = data[1]
-        AA = struct.unpack("f", data[2:5])
-        VA = struct.unpack("f", data[6:9])
+        while (i < 18):
+            print(data[i])
+            i=i+1;
+        #AA = struct.unpack("f", data[5:8])
+        #VA = struct.unpack("f", data[9:12])
 
-    print("From the board")
-    print(M)
-    print(L)
-    print(AA)
-    print(VA)
+    #print("From the board")
+    #print(M)
+    #print(L)
+    #print(AA)
+    #print(VA)
 
+recieve_data()
