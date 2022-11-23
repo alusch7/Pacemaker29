@@ -1,6 +1,9 @@
 import sys
 import os
 #This is the start of the functions for the DCM
+import serial
+import struct
+import serial.tools.list_ports
 
 def test():
     return "a"
