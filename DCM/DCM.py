@@ -7,8 +7,11 @@ import sys
 import os
 from DCM_Functions import *
 
-
 import serial
+import struct
+import serial.tools.list_ports
+
+
 '''
 s = serial.Serial('COM4',115200,timeout = 10)
 #s = ser.read(100)
@@ -633,9 +636,25 @@ def send_data (user_num,username,num_users):
         else:
             count += 1
 
-
     s.close()
-    
+
+def recieve_data(user_num,username,num_users):
+
+    FRDM_PORT = 'COM3'
+    SYNC = b'\x16'
+    FN_CODE = b'\x55'
+    MODE = struct.pack("B", 1) #For VOO
+    LRL = struct.pack("B", 1) 
+    AtrialAMP = struct.pack("I", 1000)
+    VentAMP = struct.pack("I", 1000)
+    AtrPW = struct.pack("B", 1)
+    VentPW = struct.pack("B", 1)
+    AtrSens = struct.pack("B", 1)
+    VRP = struct.pack("H", 10) #Unsigned Short Size 2
+    ARP = struct.pack("H", 10)
+
+
+
 
 
 def display_and_edit_Info(user_num,username,num_users): 
