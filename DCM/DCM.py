@@ -23,7 +23,7 @@ for i in range(10):
 
 s.close()
 '''
-pacemaker_connected = False
+pacemaker_connected = True
 
 #pacemaker_connected = True
 
@@ -506,54 +506,116 @@ def AOO(user_num,username,num_users): #AOO Opearting Mode Window
     
     
 def VOO(user_num,username,num_users): #VOO Operating Mode Window
-    
-   layout1 = [
-    
-    [sg.Button("Begin VOO",size=(10,2))],
-    [sg.Button("Go Back",size=(10,2))]
-      ]
+    with open("Heart_Info.txt", "r") as filestream:
+        count = 0
+        for line in filestream:
+            currentline = line.split(",")
+            
+            if (count == user_num):
+                if(pacemaker_connected):
+                    connection_string = "Connected"
+                    connection_colour = "Green"
+                else:
+                    connection_string = "Disconnected"
+                    connection_colour = "red"
+                
+                #print(type(currentline[0]))
+
+                layout1 = [
+                    
+                            
+                [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)],  
+                [sg.Text('Lower Rate Limit: ' + currentline[0], size =(25, 1))],
+                [sg.Text('Upper Rate Limit: ' + currentline[1], size =(25, 1))],
+                [sg.Text('Ventricle Amplitude: ' + currentline[4], size =(25, 1))],
+                [sg.Text('Ventricle Pulse Width: ' + currentline[5], size =(25, 1))],
+                [sg.Button("Begin VOO",size=(10,3))],
+                [sg.Button("Go Back",size=(10,3))]
+                ]
+            count+=1  
     
     # Create the window
-   window1 = sg.Window("VOO", layout1,size=(1600, 800) ,resizable=True)
+    window1 = sg.Window("VOO", layout1,size=(1600, 800) ,resizable=True)
        
-     # Create an event loop
-   while True:
-  
-      # Read the event name and any inputs given
-      event, values = window1.read()
-      
-      # Sets flag to go to different pages depending on button click
-      flag = 0
-      
-      if (event == "Begin VOO"):
-          flag = 1
-          break
-      elif (event == "Go Back"):
-          flag = 2  
-          break
+# Create an event loop
+    while True:
+   
+       # Read the event name and any inputs given
+       event, values = window1.read()
+       
+       # Sets flag to go to different pages depending on button click
+       flag = 0
+       
+       if (event == "Begin VOO"):
+           flag = 1
+           break
+       elif (event == "Go Back"):
+           flag = 2  
+           break
+    
+    window1.close()
 
-  
-  # CLose the window and go to pressed page
-   window1.close()
-  
-   if(flag == 1):
-       send_data(user_num,username,num_users)
-   elif (flag == 2):
-       logged_in_screen (user_num,username,num_users)
-    
-    
+    if(flag == 1):
+        FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
+        SYNC = b'\x22'
+        Start = b'\x16'
+        FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
+        MODE = struct.pack("B", 0) #For AOO I think 
+        LRL = struct.pack("B", int(currentline[0])) 
+        AtrialAMP = struct.pack("f", int(currentline[2]))
+        VentAMP = struct.pack("f", int(currentline[4]))
+        AtrPW = struct.pack("B", int(currentline[3]))
+        VentPW = struct.pack("B", int(currentline[5]))
+        AtrSens = struct.pack("B", 1)
+        VentSens = struct.pack("B", 1)
+        VRP = struct.pack("H", 10) #Unsigned Short Size 2
+        ARP = struct.pack("H", 10)
+
+        Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+
+        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            pacemaker.write(Signal_write)
+
+        VOO(user_num,username,num_users)
+
+    elif (flag == 2):
+        logged_in_screen (user_num,username,num_users)
     
 def VVI(user_num,username,num_users): #VVI Operating Mode Window
-    layout1 = [
-    
-    [sg.Button("Begin VVI",size=(10,2))],
-    [sg.Button("Go Back",size=(10,2))]
-      ]
+    with open("Heart_Info.txt", "r") as filestream:
+        count = 0
+        for line in filestream:
+            currentline = line.split(",")
+            
+            if (count == user_num):
+                if(pacemaker_connected):
+                    connection_string = "Connected"
+                    connection_colour = "Green"
+                else:
+                    connection_string = "Disconnected"
+                    connection_colour = "red"
+                
+                #print(type(currentline[0]))
+
+                layout1 = [
+                    
+                            
+                [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)],  
+                [sg.Text('Lower Rate Limit: ' + currentline[0], size =(25, 1))],
+                [sg.Text('Upper Rate Limit: ' + currentline[1], size =(25, 1))],
+                [sg.Text('Ventricle Amplitude: ' + currentline[4], size =(25, 1))],
+                [sg.Text('Ventricle Pulse Width: ' + currentline[5], size =(25, 1))],
+                [sg.Text('Ventricle RP: ' + currentline[6], size =(25, 1))],
+                [sg.Text('Ventricle Sens: ' + '1', size =(25, 1))],
+                [sg.Button("Begin VVI",size=(10,3))],
+                [sg.Button("Go Back",size=(10,3))]
+                ]
+            count+=1  
     
     # Create the window
     window1 = sg.Window("VVI", layout1,size=(1600, 800) ,resizable=True)
        
-    # Create an event loop
+# Create an event loop
     while True:
    
        # Read the event name and any inputs given
@@ -568,27 +630,71 @@ def VVI(user_num,username,num_users): #VVI Operating Mode Window
        elif (event == "Go Back"):
            flag = 2  
            break
-
-   
-   # CLose the window and go to pressed page
+    
     window1.close()
-   
+
     if(flag == 1):
-        send_data(user_num,username,num_users)
+        FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
+        SYNC = b'\x22'
+        Start = b'\x16'
+        FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
+        MODE = struct.pack("B", 0) #For AOO I think 
+        LRL = struct.pack("B", int(currentline[0])) 
+        AtrialAMP = struct.pack("f", int(currentline[2]))
+        VentAMP = struct.pack("f", int(currentline[4]))
+        AtrPW = struct.pack("B", int(currentline[3]))
+        VentPW = struct.pack("B", int(currentline[5]))
+        AtrSens = struct.pack("B", 1)
+        VentSens = struct.pack("B", 1)
+        VRP = struct.pack("H", int(currentline[6])) #Unsigned Short Size 2
+        ARP = struct.pack("H", int(currentline[7]))
+
+        Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+
+        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            pacemaker.write(Signal_write)
+
+        VVI(user_num,username,num_users)
+
     elif (flag == 2):
         logged_in_screen (user_num,username,num_users)
-    
+
+
 def AAI(user_num,username,num_users): #AAI Operating Mode Window
-    layout1 = [
-    
-    [sg.Button("Begin AAI",size=(10,2))],
-    [sg.Button("Go Back",size=(10,2))]
-      ]
+    with open("Heart_Info.txt", "r") as filestream:
+        count = 0
+        for line in filestream:
+            currentline = line.split(",")
+            
+            if (count == user_num):
+                if(pacemaker_connected):
+                    connection_string = "Connected"
+                    connection_colour = "Green"
+                else:
+                    connection_string = "Disconnected"
+                    connection_colour = "red"
+                
+                #print(type(currentline[0]))
+
+                layout1 = [
+                    
+                            
+                [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)],  
+                [sg.Text('Lower Rate Limit: ' + currentline[0], size =(25, 1))],
+                [sg.Text('Upper Rate Limit: ' + currentline[1], size =(25, 1))],
+                [sg.Text('Atrial Amplitude: ' + currentline[2], size =(25, 1))],
+                [sg.Text('Atrial Pulse Width: ' + currentline[3], size =(25, 1))],
+                [sg.Text('Atrial RP: ' + currentline[7], size =(25, 1))],
+                [sg.Text('Atial Sens: ' + '1', size =(25, 1))],
+                [sg.Button("Begin AAI",size=(10,3))],
+                [sg.Button("Go Back",size=(10,3))]
+                ]
+            count+=1  
     
     # Create the window
     window1 = sg.Window("AAI", layout1,size=(1600, 800) ,resizable=True)
        
-    # Create an event loop
+# Create an event loop
     while True:
    
        # Read the event name and any inputs given
@@ -603,13 +709,32 @@ def AAI(user_num,username,num_users): #AAI Operating Mode Window
        elif (event == "Go Back"):
            flag = 2  
            break
-
-   
-   # CLose the window and go to pressed page
+    
     window1.close()
-   
+
     if(flag == 1):
-        send_data(user_num,username,num_users)
+        FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
+        SYNC = b'\x22'
+        Start = b'\x16'
+        FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
+        MODE = struct.pack("B", 0) #For AOO I think 
+        LRL = struct.pack("B", int(currentline[0])) 
+        AtrialAMP = struct.pack("f", int(currentline[2]))
+        VentAMP = struct.pack("f", int(currentline[4]))
+        AtrPW = struct.pack("B", int(currentline[3]))
+        VentPW = struct.pack("B", int(currentline[5]))
+        AtrSens = struct.pack("B", 1)
+        VentSens = struct.pack("B", 1)
+        VRP = struct.pack("H", int(currentline[6])) #Unsigned Short Size 2
+        ARP = struct.pack("H", int(currentline[7]))
+
+        Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+
+        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            pacemaker.write(Signal_write)
+
+        AAI(user_num,username,num_users)
+
     elif (flag == 2):
         logged_in_screen (user_num,username,num_users)
     
