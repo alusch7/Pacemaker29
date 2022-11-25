@@ -6,21 +6,7 @@ import struct
 import serial.tools.list_ports
 
 def test():
-    return "a"
-
-def get_connection_string(pacemaker_connected):
-    if(pacemaker_connected):
-        connection_string = "Connected"
-    else:
-        connection_string = "Disconnected"
-    return connection_string
-
-def get_connection_color(pacemaker_connected):
-    if(pacemaker_connected):
-        connection_colour = "Green"
-    else:
-        connection_colour = "red"
-    return connection_colour
+    return None
 
 def recieve_data():
 
@@ -38,6 +24,7 @@ def recieve_data():
     VentSens = struct.pack("B", 1)
     VRP = struct.pack("H", 10) #Unsigned Short Size 2
     ARP = struct.pack("H", 10)
+    values = []
 
     Signal_echo = Start + SYNC + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
     i = 0
@@ -55,14 +42,15 @@ def recieve_data():
         get_Vent_Sens = data[15]
         get_VRP = struct.unpack("H", data[16:17])
         get_ARP = struct.unpack("H", data[18:19])
-        
-        #M = data[0]
-        #L = data[1]
-        #while (i < 18):
-            #print(data[i])
-            #i=i+1;
-        #AA = struct.unpack("f", data[5:8])
-        #VA = struct.unpack("f", data[9:12])
+    
+    values.append[get_LRL]
+    values.append[get_Atrial_AMP]
+    values.append[get_Atrial_PW]
+    values.append[get_Vent_AMP]
+    values.append[get_Vent_PW]
+    values.append[get_Vent_Sens]
+    values.append[get_Atrial_Sens]
+
 
     print(get_MODE)
     print(get_LRL)
@@ -104,4 +92,5 @@ def send_data():
     with serial.Serial(FRDM_PORT, 115200) as pacemaker:
         pacemaker.write(Signal_write)
 
-recieve_data()
+#recieve_data()
+
