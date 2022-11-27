@@ -5,7 +5,7 @@
 import PySimpleGUI as sg
 import sys
 import os
-#from DCM_Functions import *
+from DCM_Functions import *
 
 import serial
 import struct
@@ -23,20 +23,19 @@ for i in range(10):
 
 s.close()
 '''
+
+
 pacemaker_connected = True
 
-#pacemaker_connected = True
-
-
 def get_connection_string(pacemaker_connected):
-    if(pacemaker_connected):
+    if(is_connected()):
         connection_string = "Connected"
     else:
         connection_string = "Disconnected"
     return connection_string
 
 def get_connection_color(pacemaker_connected):
-    if(pacemaker_connected):
+    if(is_connected()):
         connection_colour = "Green"
     else:
         connection_colour = "red"
@@ -479,25 +478,27 @@ def AOO(user_num,username,num_users): #AOO Opearting Mode Window
     window1.close()
    
     if(flag == 1):
-        FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
-        SYNC = b'\x22'
-        Start = b'\x16'
-        FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
-        MODE = struct.pack("B", 0) #For AOO I think 
-        LRL = struct.pack("B", int(currentline[0])) 
-        AtrialAMP = struct.pack("f", int(currentline[2]))
-        VentAMP = struct.pack("f", 1.000)
-        AtrPW = struct.pack("B", int(currentline[3]))
-        VentPW = struct.pack("B", 1)
-        AtrSens = struct.pack("B", 1)
-        VentSens = struct.pack("B", 1)
-        VRP = struct.pack("H", 10) #Unsigned Short Size 2
-        ARP = struct.pack("H", 10)
+    
+        UART_send_data([2, int(currentline[0]), int(currentline[2]), 1.000, int(currentline[3]), 1, 1, 1, 10, 10])
+        # FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
+        # SYNC = b'\x22'
+        # Start = b'\x16'
+        # FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Model
+        # MODE = struct.pack("B", 0) #For AOO I think 
+        # LRL = struct.pack("B", int(currentline[0])) 
+        # AtrialAMP = struct.pack("f", int(currentline[2]))
+        # VentAMP = struct.pack("f", 1.000)
+        # AtrPW = struct.pack("B", int(currentline[3]))
+        # VentPW = struct.pack("B", 1)
+        # AtrSens = struct.pack("B", 1)
+        # VentSens = struct.pack("B", 1)
+        # VRP = struct.pack("H", 10) #Unsigned Short Size 2
+        # ARP = struct.pack("H", 10)
 
-        Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+        # Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
 
-        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
-            pacemaker.write(Signal_write)
+        # with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            # pacemaker.write(Signal_write)
 
         AOO(user_num,username,num_users)
 
@@ -556,25 +557,28 @@ def VOO(user_num,username,num_users): #VOO Operating Mode Window
     window1.close()
 
     if(flag == 1):
-        FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
-        SYNC = b'\x22'
-        Start = b'\x16'
-        FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
-        MODE = struct.pack("B", 0) #For AOO I think 
-        LRL = struct.pack("B", int(currentline[0])) 
-        AtrialAMP = struct.pack("f", int(currentline[2]))
-        VentAMP = struct.pack("f", int(currentline[4]))
-        AtrPW = struct.pack("B", int(currentline[3]))
-        VentPW = struct.pack("B", int(currentline[5]))
-        AtrSens = struct.pack("B", 1)
-        VentSens = struct.pack("B", 1)
-        VRP = struct.pack("H", 10) #Unsigned Short Size 2
-        ARP = struct.pack("H", 10)
+        UART_send_data([1, int(currentline[0]), int(currentline[2]), currentline[4], int(currentline[3]), int(currentline[5]), 1, 1, 10, 10])
 
-        Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+        # # Make this a function call to the send_data() function in DCM_functions, send in an array of values
+        # FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
+        # SYNC = b'\x22'
+        # Start = b'\x16'
+        # FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
+        # MODE = struct.pack("B", 0) #For AOO I think 
+        # LRL = struct.pack("B", int(currentline[0])) 
+        # AtrialAMP = struct.pack("f", int(currentline[2]))
+        # VentAMP = struct.pack("f", int(currentline[4]))
+        # AtrPW = struct.pack("B", int(currentline[3]))
+        # VentPW = struct.pack("B", int(currentline[5]))
+        # AtrSens = struct.pack("B", 1)
+        # VentSens = struct.pack("B", 1)
+        # VRP = struct.pack("H", 10) #Unsigned Short Size 2
+        # ARP = struct.pack("H", 10)
 
-        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
-            pacemaker.write(Signal_write)
+        # Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+
+        # with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            # pacemaker.write(Signal_write)
 
         VOO(user_num,username,num_users)
 
@@ -634,25 +638,28 @@ def VVI(user_num,username,num_users): #VVI Operating Mode Window
     window1.close()
 
     if(flag == 1):
-        FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
-        SYNC = b'\x22'
-        Start = b'\x16'
-        FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
-        MODE = struct.pack("B", 0) #For AOO I think 
-        LRL = struct.pack("B", int(currentline[0])) 
-        AtrialAMP = struct.pack("f", int(currentline[2]))
-        VentAMP = struct.pack("f", int(currentline[4]))
-        AtrPW = struct.pack("B", int(currentline[3]))
-        VentPW = struct.pack("B", int(currentline[5]))
-        AtrSens = struct.pack("B", 1)
-        VentSens = struct.pack("B", 1)
-        VRP = struct.pack("H", int(currentline[6])) #Unsigned Short Size 2
-        ARP = struct.pack("H", int(currentline[7]))
+    
+        UART_send_data([3, int(currentline[0]), int(currentline[2]), int(currentline[4]), int(currentline[3]), int(currentline[5]), 1, 1, int(currentline[6]), int(currentline[7])])
 
-        Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+        # FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
+        # SYNC = b'\x22'
+        # Start = b'\x16'
+        # FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
+        # MODE = struct.pack("B", 0) #For AOO I think 
+        # LRL = struct.pack("B", int(currentline[0])) 
+        # AtrialAMP = struct.pack("f", int(currentline[2]))
+        # VentAMP = struct.pack("f", int(currentline[4]))
+        # AtrPW = struct.pack("B", int(currentline[3]))
+        # VentPW = struct.pack("B", int(currentline[5]))
+        # AtrSens = struct.pack("B", 1)
+        # VentSens = struct.pack("B", 1)
+        # VRP = struct.pack("H", int(currentline[6])) #Unsigned Short Size 2
+        # ARP = struct.pack("H", int(currentline[7]))
 
-        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
-            pacemaker.write(Signal_write)
+        # Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+
+        # with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            # pacemaker.write(Signal_write)
 
         VVI(user_num,username,num_users)
 
@@ -713,25 +720,28 @@ def AAI(user_num,username,num_users): #AAI Operating Mode Window
     window1.close()
 
     if(flag == 1):
-        FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
-        SYNC = b'\x22'
-        Start = b'\x16'
-        FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
-        MODE = struct.pack("B", 0) #For AOO I think 
-        LRL = struct.pack("B", int(currentline[0])) 
-        AtrialAMP = struct.pack("f", int(currentline[2]))
-        VentAMP = struct.pack("f", int(currentline[4]))
-        AtrPW = struct.pack("B", int(currentline[3]))
-        VentPW = struct.pack("B", int(currentline[5]))
-        AtrSens = struct.pack("B", 1)
-        VentSens = struct.pack("B", 1)
-        VRP = struct.pack("H", int(currentline[6])) #Unsigned Short Size 2
-        ARP = struct.pack("H", int(currentline[7]))
+    
+        UART_send_data([4, int(currentline[0]), int(currentline[2]), int(currentline[4]), int(currentline[3]), int(currentline[5]), 1, 1, int(currentline[6]), int(currentline[7])])
 
-        Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+        # FRDM_PORT = '/dev/cu.usbmodem1444203' #Change depending on the computer used
+        # SYNC = b'\x22'
+        # Start = b'\x16'
+        # FN_CODE = b'\x55' #Send 55 in order to write to the Simulink Mdeol
+        # MODE = struct.pack("B", 0) #For AOO I think 
+        # LRL = struct.pack("B", int(currentline[0])) 
+        # AtrialAMP = struct.pack("f", int(currentline[2]))
+        # VentAMP = struct.pack("f", int(currentline[4]))
+        # AtrPW = struct.pack("B", int(currentline[3]))
+        # VentPW = struct.pack("B", int(currentline[5]))
+        # AtrSens = struct.pack("B", 1)
+        # VentSens = struct.pack("B", 1)
+        # VRP = struct.pack("H", int(currentline[6])) #Unsigned Short Size 2
+        # ARP = struct.pack("H", int(currentline[7]))
 
-        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
-            pacemaker.write(Signal_write)
+        # Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+
+        # with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            # pacemaker.write(Signal_write)
 
         AAI(user_num,username,num_users)
 
@@ -869,47 +879,48 @@ def receive_data(user_num,username,num_users):
    
     if(flag == 1):
         #Acquire all the information from the Pacemaker
-        FRDM_PORT = '/dev/cu.usbmodem1444203'
-        SYNC = b'\x22'
-        Start = b'\x16'
-        FN_CODE = b'\x55'
-        MODE = struct.pack("B", 1) #For VOO
-        LRL = struct.pack("B", 1) 
-        AtrialAMP = struct.pack("f", 1000)
-        VentAMP = struct.pack("f", 1000)
-        AtrPW = struct.pack("B", 1)
-        VentPW = struct.pack("B", 1)
-        AtrSens = struct.pack("B", 1)
-        VentSens = struct.pack("B", 1)
-        VRP = struct.pack("H", 10) #Unsigned Short Size 2
-        ARP = struct.pack("H", 10)
-        values2 = []
+        # FRDM_PORT = '/dev/cu.usbmodem1444203'
+        # SYNC = b'\x22'
+        # Start = b'\x16'
+        # FN_CODE = b'\x55'
+        # MODE = struct.pack("B", 1) #For VOO
+        # LRL = struct.pack("B", 1) 
+        # AtrialAMP = struct.pack("f", 1000)
+        # VentAMP = struct.pack("f", 1000)
+        # AtrPW = struct.pack("B", 1)
+        # VentPW = struct.pack("B", 1)
+        # AtrSens = struct.pack("B", 1)
+        # VentSens = struct.pack("B", 1)
+        # VRP = struct.pack("H", 10) #Unsigned Short Size 2
+        # ARP = struct.pack("H", 10)
+        # values2 = []
 
-        Signal_echo = Start + SYNC + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+        # Signal_echo = Start + SYNC + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
 
-        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
-            pacemaker.write(Signal_echo)
-            data = pacemaker.read(19)
-            get_MODE = data[2]
-            get_LRL = data[3]
-            get_Atrial_AMP = struct.unpack("f", data[4:7])
-            get_Vent_AMP = struct.unpack("f", data[8:11])
-            get_Atrial_PW = data[12]
-            get_Vent_PW = data[13]
-            get_Atrial_Sens = data[14]
-            get_Vent_Sens = data[15]
-            get_VRP = struct.unpack("H", data[16:17])
-            get_ARP = struct.unpack("H", data[18:19])
+        # with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            # pacemaker.write(Signal_echo)
+            # data = pacemaker.read(19)
+            # get_MODE = data[2]
+            # get_LRL = data[3]
+            # get_Atrial_AMP = struct.unpack("f", data[4:7])
+            # get_Vent_AMP = struct.unpack("f", data[8:11])
+            # get_Atrial_PW = data[12]
+            # get_Vent_PW = data[13]
+            # get_Atrial_Sens = data[14]
+            # get_Vent_Sens = data[15]
+            # get_VRP = struct.unpack("H", data[16:17])
+            # get_ARP = struct.unpack("H", data[18:19])
         
-        values2.append[get_LRL]
-        values2.append[get_LRL + 50] #Placeholder for URL
-        values2.append[get_Atrial_AMP]
-        values2.append[get_Atrial_PW]
-        values2.append[get_Vent_AMP]
-        values2.append[get_Vent_PW]
-        values2.append[get_Vent_Sens]
-        values2.append[get_Atrial_Sens]
-
+        # values2.append[get_LRL]
+        # values2.append[get_LRL + 50] #Placeholder for URL
+        # values2.append[get_Atrial_AMP]
+        # values2.append[get_Atrial_PW]
+        # values2.append[get_Vent_AMP]
+        # values2.append[get_Vent_PW]
+        # values2.append[get_Vent_Sens]
+        # values2.append[get_Atrial_Sens]
+        values2 = []
+        values2 = UART_receive_data()
         receive_data(user_num,username,num_users)
 
     elif (flag == 2):
