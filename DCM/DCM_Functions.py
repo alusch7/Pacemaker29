@@ -40,28 +40,28 @@ def UART_receive_data():
     
     Signal_echo = Start + SYNC + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
     data_received = False
-    while ~data_received:
-        try:
-            with serial.Serial(FRDM_PORT, 115200) as pacemaker:
-                pacemaker.write(Signal_echo)
-                time.sleep(0.001)
-                data = pacemaker.read(pacemaker.inWaiting())
-                get_MODE = data[0]
-                get_LRL = data[1]
-                get_Atrial_AMP = struct.unpack("f", data[2:6])[0]
-                get_Vent_AMP = struct.unpack("f", data[6:10])[0]
-                get_Atrial_PW = data[10]
-                get_Vent_PW = data[11]
-                get_Atrial_Sens = data[12]
-                get_Vent_Sens = data[13]
-                get_VRP = struct.unpack("H", data[14:16])[0]
-                get_ARP = struct.unpack("H", data[16:18])[0]
-                get_VentSignal = struct.unpack("f", data[18:22])[0]
-                get_AtrSignal = struct.unpack("f", data[22:26])[0]
-                # pacemaker.close()
-                break
-        except:
-            data_received = False
+    # while ~data_received:
+      #   try:
+    with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+        pacemaker.write(Signal_echo)
+        time.sleep(0.001)
+        data = pacemaker.read(pacemaker.inWaiting())
+        get_MODE = data[0]
+        get_LRL = data[1]
+        get_Atrial_AMP = struct.unpack("f", data[2:6])[0]
+        get_Vent_AMP = struct.unpack("f", data[6:10])[0]
+        get_Atrial_PW = data[10]
+        get_Vent_PW = data[11]
+        get_Atrial_Sens = data[12]
+        get_Vent_Sens = data[13]
+        get_VRP = struct.unpack("H", data[14:16])[0]
+        get_ARP = struct.unpack("H", data[16:18])[0]
+        get_VentSignal = struct.unpack("f", data[18:22])[0]
+        get_AtrSignal = struct.unpack("f", data[22:26])[0]
+        # pacemaker.close()
+        # break
+        # except:
+          #   data_received = False
     
     values.append(get_LRL)
     values.append(get_Atrial_AMP)
@@ -116,4 +116,4 @@ def UART_send_data(out_data):
         # pacemaker.close()
 
 
-UART_receive_data()
+# UART_receive_data()

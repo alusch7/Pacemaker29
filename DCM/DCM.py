@@ -25,7 +25,7 @@ s.close()
 '''
 
 
-pacemaker_connected = True
+pacemaker_connected = False
 
 def get_connection_string(pacemaker_connected):
     if(is_connected()):
@@ -43,11 +43,10 @@ def get_connection_color(pacemaker_connected):
 
 # Welcome Screen function
 def welcome_screen():
-
     #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
     connection_string = get_connection_string(pacemaker_connected)
     connection_colour = get_connection_color(pacemaker_connected)
-    
+
     layout1 = [
     #Creating modules for the welcome screen
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
@@ -958,7 +957,24 @@ def receive_data(user_num,username,num_users):
     elif (flag == 3):
         logged_in_screen (user_num,username,num_users)
 
+def write_to_heartinfo(num_users, write_info):
+    count = 0
+    for i in range(num_users):
+        with open("Heart_Info.txt", "w") as filestream:
+            #  write_info = [ [] for i in range(num_users)]
+            #login_info = open("Login_Info.txt","r+") 
+            count = 0
+            for i in range(num_users):
+                
+                for j in range(8):
+                    filestream.write(write_info[i][j])
+                    
+                    if (j != 7):
+                        filestream.write(",")
 
+            break
+        
+        pass
     
 
 def display_and_edit_Info(user_num,username,num_users): 
@@ -972,18 +988,13 @@ def display_and_edit_Info(user_num,username,num_users):
         for line in filestream:
            # print("BBBBB: " + str(user_num))
             currentline = line.split(",")
-            
             if (count == user_num):
-                if(pacemaker_connected):
-                    connection_string = "Connected"
-                    connection_colour = "Green"
-                else:
-                    connection_string = "Disconnected"
-                    connection_colour = "red"
-                
-                layout1 = [
-                    
-                            
+                #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+                connection_string = get_connection_string(pacemaker_connected)
+                connection_colour = get_connection_color(pacemaker_connected)
+                LRL = int(currentline[0])
+                URL = int(currentline[1])
+                layout1 = [          
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)], 
                 [sg.Text("Set Patient Variables", justification='center')],    
                 [sg.Text('Enter new data to replace existing values')],
@@ -1058,58 +1069,42 @@ def display_and_edit_Info(user_num,username,num_users):
                     count+=1
             #print(write_info)
 
-            if(values [0] > 50): #LRL > 50
-                if (values [1] < 130): # URL < 130
-                    if (values[0] > values [1]):
-                        
 
-            
-                        if (not(isLetter)): #Checks if the value is indeed a number and not some random value
-            
-                            with open("Heart_Info.txt", "w") as filestream:
-                                
-                              #  write_info = [ [] for i in range(num_users)]
-                                
-                                #login_info = open("Login_Info.txt","r+") 
-                                count = 0
-                                for i in range(num_users):
-
-                                    
-                                        with open("Heart_Info.txt", "w") as filestream:
-                                            
-                                          #  write_info = [ [] for i in range(num_users)]
-                                            
-                                            #login_info = open("Login_Info.txt","r+") 
-                                            count = 0
-                                            for i in range(num_users):
-                                                
-                                                for j in range(8):
-                                                    filestream.write(write_info[i][j])
-                                                    
-                                                    if (j != 7):
-                                                        filestream.write(",")
-                            
-                                            break
-                                        
-                                        pass
-                        else:
-                            sg.Popup('A non numeric character was entered, please try again!', keep_on_top=True)
-                            flag = 1
-                            #break
-                    else:
-                        sg.Popup('Lower rate limit cannot be higher than the upper rate limit, please try again!', keep_on_top=True)
-                        flag = 1
-                        #break        
-                else:
+            if (isLetter):     #Checks if the value is indeed a number and not some random value
+                sg.Popup('A non numeric character was entered, please try again!', keep_on_top=True)
+                flag = 1
+                #break  
+            elif (values[0] != '' and values[1] != ''):
+                if(int(values[0]) < 50): #LRL > 50
+                    sg.Popup('Lower rate limit is too low, please try again!', keep_on_top=True)
+                    flag = 1
+                elif(int(values[1]) > 130): # URL < 130
                     sg.Popup('Upper rate limit is too high, please try again!', keep_on_top=True)
                     flag = 1
                     #break    
-                    
+                elif(int(values[0]) > int(values[1])):            
+                    sg.Popup('Lower rate limit cannot be higher than the upper rate limit, please try again!', keep_on_top=True)
+                    flag = 1
+                    #break
+                else:
+                    write_to_heartinfo(num_users, write_info)
+            elif (values[0] != '' or values[1] != ''):
+                if(values[0] != "" and int(values[0]) < 50): #LRL > 50
+                    sg.Popup('Lower rate limit is too low, please try again!', keep_on_top=True)
+                    flag = 1
+                elif (values[1] != '' and int(values[1]) > 130): # URL < 130
+                    sg.Popup('Upper rate limit is too high, please try again!', keep_on_top=True)
+                    flag = 1
+                    #break  
+                elif ((values[0] != '' and values[1] == '' and int(values[0]) > URL) or (values[0] == '' and values[1] != '' and LRL > int(values[1]))):            
+                    sg.Popup('Lower rate limit cannot be higher than the upper rate limit, please try again!', keep_on_top=True)
+                    flag = 1
+                    #break 
+                else:
+                    write_to_heartinfo(num_users, write_info)
             else:
-                sg.Popup('Lower rate limit is too low, please try again!', keep_on_top=True)
-                flag = 1
-                
-            
+                write_to_heartinfo(num_users, write_info)
+
         elif (event == sg.WIN_CLOSED):
            
             break
