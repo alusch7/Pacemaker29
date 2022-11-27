@@ -435,8 +435,8 @@ def AOO(user_num,username,num_users): #AOO Opearting Mode Window
                 VENT_PW = int(currentline[5])
                 VRP = int(currentline[6])
                 ARP = int(currentline[7])
-                ATR_Sens = 1                        # Fill with real sense values 
-                VENT_Sens = 1
+                ATR_Sens = 73                        # Fill with real sense values 
+                VENT_Sens = 79
                 
                 layout1 = [
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)],  
@@ -511,8 +511,8 @@ def VOO(user_num,username,num_users): #VOO Operating Mode Window
                 VENT_PW = int(currentline[5])
                 VRP = int(currentline[6])
                 ARP = int(currentline[7])
-                ATR_Sens = 1                        # Fill with real sense values 
-                VENT_Sens = 1
+                ATR_Sens = 73                        # Fill with real sense values 
+                VENT_Sens = 79
                 
                 layout1 = [         
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)],  
@@ -575,8 +575,8 @@ def VVI(user_num,username,num_users): #VVI Operating Mode Window
                 VENT_PW = int(currentline[5])
                 VRP = int(currentline[6])
                 ARP = int(currentline[7])
-                ATR_Sens = 1                        # Fill with real sense values 
-                VENT_Sens = 1
+                ATR_Sens = 73                        # Fill with real sense values 
+                VENT_Sens = 79
                 
                 layout1 = [          
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)],  
@@ -585,7 +585,7 @@ def VVI(user_num,username,num_users): #VVI Operating Mode Window
                 [sg.Text('Ventricle Amplitude: ' + currentline[4], size =(25, 1))],
                 [sg.Text('Ventricle Pulse Width: ' + currentline[5], size =(25, 1))],
                 [sg.Text('Ventricle RP: ' + currentline[6], size =(25, 1))],
-                [sg.Text('Ventricle Sens: ' + '1', size =(25, 1))],
+                [sg.Text('Ventricle Sens: ' + '79', size =(25, 1))],
                 [sg.Button("Begin VVI",size=(10,3))],
                 [sg.Button("Go Back",size=(10,3))]
                 ]
@@ -642,8 +642,8 @@ def AAI(user_num,username,num_users): #AAI Operating Mode Window
                 VENT_PW = int(currentline[5])
                 VRP = int(currentline[6])
                 ARP = int(currentline[7])
-                ATR_Sens = 1                        # Fill with real sense values 
-                VENT_Sens = 1
+                ATR_Sens = 73                        # Fill with real sense values 
+                VENT_Sens = 79
 
                 layout1 = [          
                 [sg.Text("Pacemaker: " + connection_string, justification='r',text_color=connection_colour)],  
@@ -652,7 +652,7 @@ def AAI(user_num,username,num_users): #AAI Operating Mode Window
                 [sg.Text('Atrial Amplitude: ' + currentline[2], size =(25, 1))],
                 [sg.Text('Atrial Pulse Width: ' + currentline[3], size =(25, 1))],
                 [sg.Text('Atrial RP: ' + currentline[7], size =(25, 1))],
-                [sg.Text('Atial Sens: ' + '1', size =(25, 1))],
+                [sg.Text('Atrial Sens: ' + '73', size =(25, 1))],
                 [sg.Button("Begin AAI",size=(10,3))],
                 [sg.Button("Go Back",size=(10,3))]
                 ]
