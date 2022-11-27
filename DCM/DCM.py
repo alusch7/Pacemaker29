@@ -41,6 +41,20 @@ def get_connection_color(pacemaker_connected):
         connection_colour = "red"
     return connection_colour
 
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
+
+def isint(num):
+    try:
+        int(num)
+        return True
+    except ValueError:
+        return False
+
 # Welcome Screen function
 def welcome_screen():
     #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
@@ -173,7 +187,8 @@ def registry():
                             username_exists = True
                             
                     for i in range (0,8):
-                        if(not(values[i].isnumeric())):
+                        #if(not(values[i].isnumeric())):
+                        if ( (isfloat(values[i]) == False) and (isint(values[i]) == False) ):
                             isLetter = True
 
                     if(len(values[0]) >= 3):
@@ -845,7 +860,8 @@ def receive_data(user_num,username,num_users):
                             write_info[count].append(currentline[i])
                         else:
                             # write_info[count].append(values[i])
-                            if (values2[i].isnumeric()):
+                            #if (values2[i].isnumeric()):
+                            if (isfloat(values[i]) == True) or (isint(values[i]) == True): 
                                 if(i != 7):
                                     write_info[count].append(values2[i])
                                 else:
