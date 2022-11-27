@@ -510,12 +510,9 @@ def VOO(user_num,username,num_users): #VOO Operating Mode Window
             currentline = line.split(",")
             5
             if (count == user_num):
-                if(pacemaker_connected):
-                    connection_string = "Connected"
-                    connection_colour = "Green"
-                else:
-                    connection_string = "Disconnected"
-                    connection_colour = "red"
+                #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+                connection_string = get_connection_string(pacemaker_connected)
+                connection_colour = get_connection_color(pacemaker_connected)
                 
                 
                 LRL = int(currentline[0])
@@ -575,12 +572,9 @@ def VVI(user_num,username,num_users): #VVI Operating Mode Window
             currentline = line.split(",")
             
             if (count == user_num):
-                if(pacemaker_connected):
-                    connection_string = "Connected"
-                    connection_colour = "Green"
-                else:
-                    connection_string = "Disconnected"
-                    connection_colour = "red"
+                #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+                connection_string = get_connection_string(pacemaker_connected)
+                connection_colour = get_connection_color(pacemaker_connected)
                 
                 LRL = int(currentline[0])
                 URL = int(currentline[1])
@@ -642,12 +636,9 @@ def AAI(user_num,username,num_users): #AAI Operating Mode Window
             currentline = line.split(",")
             
             if (count == user_num):
-                if(pacemaker_connected):
-                    connection_string = "Connected"
-                    connection_colour = "Green"
-                else:
-                    connection_string = "Disconnected"
-                    connection_colour = "red"
+                #Acquires the information to tbe displayed based on the connectivity status of the Pacemaker
+                connection_string = get_connection_string(pacemaker_connected)
+                connection_colour = get_connection_color(pacemaker_connected)
                 
                 LRL = int(currentline[0])
                 URL = int(currentline[1])
@@ -976,14 +967,14 @@ def display_and_edit_Info(user_num,username,num_users):
                                 write_info[count].append(currentline[i])
                             else:
                                # write_info[count].append(values[i])
-                                if (values[i].isdigit()):
+                                if ((isfloat(values[i]) == False) and (isint(values[i]) == False)):
+                                    isLetter = True
+                                    break
+                                else:
                                     if(i != 7):
                                         write_info[count].append(values[i])
                                     else:
                                         write_info[count].append(values[i] + "\n")
-                                else:
-                                    isLetter = True
-                                    break
                     
                     count+=1
             #print(write_info)
