@@ -12,7 +12,8 @@ FRDM_PORT = 'COM4'
 
 def is_connected():
     try:
-        serial.Serial(FRDM_PORT, 115200)
+        with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+            pacemaker.close()
         return True
     except:
         return False
@@ -27,41 +28,46 @@ def UART_receive_data():
     FN_CODE = b'\x55'   # This is only for sending data to Simulink
     MODE = struct.pack("B", 1) #For VOO
     LRL = struct.pack("B", 1) 
-    AtrialAMP = struct.pack("f", 1000)
-    VentAMP = struct.pack("f", 1000)
+    AtrialAMP = struct.pack("f", 0.5)
+    VentAMP = struct.pack("f", 2.6)
     AtrPW = struct.pack("B", 1)
     VentPW = struct.pack("B", 1)
     AtrSens = struct.pack("B", 1)
     VentSens = struct.pack("B", 1)
     VRP = struct.pack("H", 10) #Unsigned Short Size 2
     ARP = struct.pack("H", 10)
+    VentSignal = struct.pack("f", 0)
+    AtrSignal = struct.pack("f", 0)
     values = []
 
     
-    Signal_echo = Start + SYNC + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
+    Signal_echo = Start + SYNC + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP + VentSignal + AtrSignal
     data_received = False
-    # while ~data_received:
-      #   try:
-    with serial.Serial(FRDM_PORT, 115200) as pacemaker:
-        pacemaker.write(Signal_echo)
-        time.sleep(0.001)
-        data = pacemaker.read(pacemaker.inWaiting())
-        get_MODE = data[0]
-        get_LRL = data[1]
-        get_Atrial_AMP = struct.unpack("f", data[2:6])[0]
-        get_Vent_AMP = struct.unpack("f", data[6:10])[0]
-        get_Atrial_PW = data[10]
-        get_Vent_PW = data[11]
-        get_Atrial_Sens = data[12]
-        get_Vent_Sens = data[13]
-        get_VRP = struct.unpack("H", data[14:16])[0]
-        get_ARP = struct.unpack("H", data[16:18])[0]
-        get_VentSignal = struct.unpack("f", data[18:22])[0]
-        get_AtrSignal = struct.unpack("f", data[22:26])[0]
-        # pacemaker.close()
-        # break
-        # except:
-          #   data_received = False
+    print("Starting data receive...")
+    while ~data_received:
+        try:
+            with serial.Serial(FRDM_PORT, 115200) as pacemaker:
+                pacemaker.write(Signal_echo)
+                # time.sleep(0.001)
+                data = pacemaker.read(26)
+                get_MODE = data[0]
+                get_LRL = data[1]
+                get_Atrial_AMP = struct.unpack("f", data[2:6])[0]
+                get_Vent_AMP = struct.unpack("f", data[6:10])[0]
+                get_Atrial_PW = data[10]
+                get_Vent_PW = data[11]
+                get_Atrial_Sens = data[12]
+                get_Vent_Sens = data[13]
+                get_VRP = struct.unpack("H", data[14:16])[0]
+                get_ARP = struct.unpack("H", data[16:18])[0]
+                get_VentSignal = struct.unpack("f", data[18:22])[0]
+                get_AtrSignal = struct.unpack("f", data[22:26])[0]
+                data_received = True
+                pacemaker.close()
+                break
+        except:
+            print("Error detected.. restarting")
+            data_received = False
     
     values.append(get_LRL)
     values.append(get_Atrial_AMP)
@@ -74,24 +80,23 @@ def UART_receive_data():
     values.append(get_AtrSignal)
     
     # Debugging Print Statements
-    print(get_MODE)
-    print(get_LRL)
-    print(get_Atrial_AMP)
-    print(get_Vent_AMP)
-    print(get_Atrial_PW)
-    print(get_Vent_PW)
-    print(get_Atrial_Sens)
-    print(get_Vent_Sens)
-    print(get_VRP)
-    print(get_ARP)
-    print(get_VentSignal)
-    print(get_AtrSignal)
+##    print(get_MODE)
+##    print(get_LRL)
+##    print(get_Atrial_AMP)
+##    print(get_Vent_AMP)
+##    print(get_Atrial_PW)
+##    print(get_Vent_PW)
+##    print(get_Atrial_Sens)
+##    print(get_Vent_Sens)
+##    print(get_VRP)
+##    print(get_ARP)
+##    print(get_VentSignal)
+##    print(get_AtrSignal)
 
     return values
     
 
 def UART_send_data(out_data):
-
     SYNC = b'\x22'
     Start = b'\x16'
     FN_CODE = b'\x55'
@@ -105,15 +110,18 @@ def UART_send_data(out_data):
     VentSens = struct.pack("B", out_data[7])
     VRP = struct.pack("H", out_data[8]) #Unsigned Short Size 2
     ARP = struct.pack("H", out_data[9])
-    VentSignal = struct.pack("f", 0)
-    AtrSignal = struct.pack("f", 0)
+    VentSignal = struct.pack("f", 0.0)
+    AtrSignal = struct.pack("f", 0.0)
 
 
-    Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP
-
+    Signal_write = Start + FN_CODE + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP + VentSignal + AtrSignal
+    print("Starting data send...")
     with serial.Serial(FRDM_PORT, 115200) as pacemaker:
         pacemaker.write(Signal_write)
-        # pacemaker.close()
+        pacemaker.close()
+    print("Data sent!")
 
 
+# UART_receive_data()
+# UART_send_data([2, 1, 1.0, 2.0, 1,1,1,1,10, 10])
 # UART_receive_data()
