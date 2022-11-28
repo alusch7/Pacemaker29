@@ -43,7 +43,7 @@ def UART_receive_data():
     
     Signal_echo = Start + SYNC + MODE + LRL + AtrialAMP + VentAMP + AtrPW + VentPW + AtrSens + VentSens + VRP + ARP + VentSignal + AtrSignal
     data_received = False
-    print("Starting data receive...")
+    # print("Starting data receive...")
     while ~data_received:
         try:
             with serial.Serial(FRDM_PORT, 115200) as pacemaker:
@@ -63,6 +63,7 @@ def UART_receive_data():
                 get_VentSignal = struct.unpack("f", data[18:22])[0]
                 get_AtrSignal = struct.unpack("f", data[22:26])[0]
                 data_received = True
+                # print("Data received!")
                 pacemaker.close()
                 break
         except:
@@ -122,6 +123,3 @@ def UART_send_data(out_data):
     print("Data sent!")
 
 
-# UART_receive_data()
-# UART_send_data([2, 1, 1.0, 2.0, 1,1,1,1,10, 10])
-# UART_receive_data()

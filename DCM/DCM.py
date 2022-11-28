@@ -11,6 +11,10 @@ import serial
 import struct
 import serial.tools.list_ports
 
+import matplotlib.pyplot as plt
+import matplotlib.animation as animator
+import time
+
 
 '''
 s = serial.Serial('COM4',115200,timeout = 10)
@@ -361,7 +365,8 @@ def logged_in_screen (user_num,username,num_users):
                 [sg.Button("AOOR",size=(10,2))], 
                 [sg.Button("VOOR",size=(10,2))],
                 [sg.Button("View/Edit Parameters",size=(10,2))],
-                [sg.Button("Receive Data from Pacemaker",size=(10,2))],
+                # [sg.Button("Receive Data from Pacemaker",size=(10,2))],
+                [sg.Button("Display Egram",size=(10,2))],
                 [sg.Button("Go Back (Logout)",size=(10,2))]
               ]
 
@@ -403,6 +408,9 @@ def logged_in_screen (user_num,username,num_users):
         elif(event == "Receive Data from Pacemaker"):
             flag = 9
             break
+        elif(event == "Display Egram"):
+            flag = 10
+            break
         elif (event == sg.WIN_CLOSED):
             break
     
@@ -429,6 +437,9 @@ def logged_in_screen (user_num,username,num_users):
         login()
     elif(flag == 9):
         receive_data(user_num,username,num_users)
+    elif(flag == 10):
+        display_egram()
+        logged_in_screen(user_num,username,num_users)
 
 
 def AOO(user_num,username,num_users): #AOO Opearting Mode Window
@@ -1025,6 +1036,47 @@ def display_and_edit_Info(user_num,username,num_users):
         display_and_edit_Info(user_num,username,num_users)
     elif (flag == 2):
         logged_in_screen(user_num,username,num_users)
+
+
+
+def display_egram():
+    t = 0.0
+    timestep = 0.01
+    fulltime = 10
+    x_low = 0
+    x_high = 5
+    y_low = 0
+    y_high = 1
+    VentSignalPrev = UART_receive_data()[7]
+    basetime = time.time()
+    while(t < fulltime):
+        plt.axis([x_low, x_high, y_low, y_high])
+        elapsed_time = 0
+        elapsed_time_prev = 0
+        time1 = time.time()
+        while(elapsed_time < x_high):
+            VentSignal = UART_receive_data()[7]
+            plt.plot([x_low + elapsed_time_prev, x_low + elapsed_time], [VentSignalPrev, VentSignal], 'b')
+            plt.pause(timestep)
+            time.sleep(0.01)
+            VentSignalPrev = VentSignal
+            elapsed_time_prev = elapsed_time
+            elapsed_time = time.time()- time1
+        x_low = elapsed_time
+        x_high = x_high + x_low
+        t = time.time() - basetime
+        plt.clf()
+
+
+##for i in range(1, x_high):
+##            time1 = time.time()
+##            VentSignal = UART_receive_data()[7]
+##            plt.plot([i-1, i], [VentSignalPrev, VentSignal], 'b')
+##            plt.pause(timestep)
+##            t += timestep
+##            print("Time elapsed: \t" + str(time.time() - time1))
+##            VentSignalPrev = VentSignal     
+    
 
 sg.theme('DarkAmber')
 
