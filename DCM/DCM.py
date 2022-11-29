@@ -365,7 +365,7 @@ def logged_in_screen (user_num,username,num_users):
                 [sg.Button("AOOR",size=(10,2))], 
                 [sg.Button("VOOR",size=(10,2))],
                 [sg.Button("View/Edit Parameters",size=(10,2))],
-                # [sg.Button("Receive Data from Pacemaker",size=(10,2))],
+                [sg.Button("Receive Data from Pacemaker",size=(10,2))],
                 [sg.Button("Display Egram",size=(10,2))],
                 [sg.Button("Go Back (Logout)",size=(10,2))]
               ]
@@ -804,7 +804,7 @@ def send_data (user_num,username,num_users):
 def receive_data(user_num,username,num_users):
     layout1 = [
     [sg.Button("Receive Data",size=(10,2))],
-    [sg.Button("Write Data",size=(10,2))],
+    # [sg.Button("Write Data",size=(10,2))],
     [sg.Button("Go Back",size=(10,2))]
       ]
     
@@ -839,7 +839,32 @@ def receive_data(user_num,username,num_users):
         #Acquire all the information from the Pacemaker
         values2 = []
         values2 = UART_receive_data()
-        receive_data(user_num,username,num_users)
+        with open("Heart_Info.txt", "r") as filestream:
+            write_info = [ [] for i in range(num_users)]
+            
+            #login_info = open("Login_Info.txt","r+") 
+            count = 0
+            for line in filestream:
+
+                currentline = line.split(",")
+                
+                if (count != user_num):
+                    for i in range (8):
+                        write_info[count].append(currentline[i])
+                else:
+                    for i in range (7):
+                        print(values2[i])
+                        # write_info[count].append(values[i])
+                        if(i == 1):
+                            write_info[count].append("120")
+                            write_info[count].append(str(values2[i]))
+                        elif(i != 6):
+                            write_info[count].append(str(values2[i]))
+                        else:
+                            write_info[count].append(str(values2[i]) + "\n")
+                count+=1
+        write_to_heartinfo(num_users, write_info)
+        receive_data(user_num, username, num_users)
 
     elif (flag == 2):
         with open("Heart_Info.txt", "r") as filestream:
@@ -892,7 +917,6 @@ def write_to_heartinfo(num_users, write_info):
                     
                     if (j != 7):
                         filestream.write(",")
-
             break
         
         pass

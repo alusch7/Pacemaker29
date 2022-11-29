@@ -75,8 +75,8 @@ def UART_receive_data():
     values.append(get_Atrial_PW)
     values.append(get_Vent_AMP)
     values.append(get_Vent_PW)
-    values.append(get_Vent_Sens)
-    values.append(get_Atrial_Sens)
+    values.append(get_VRP)
+    values.append(get_ARP)
     values.append(get_VentSignal)
     values.append(get_AtrSignal)
     
