@@ -366,7 +366,9 @@ def logged_in_screen (user_num,username,num_users):
                 [sg.Button("VOOR",size=(10,2))],
                 [sg.Button("View/Edit Parameters",size=(10,2))],
                 [sg.Button("Receive Data from Pacemaker",size=(10,2))],
-                [sg.Button("Display Egram",size=(10,2))],
+                [sg.Button("Display Ventricle Egram",size=(10,2))],
+                [sg.Button("Display Atrial Egram",size=(10,2))],
+                [sg.Button("Display Dual Egram",size=(10,2))],
                 [sg.Button("Go Back (Logout)",size=(10,2))]
               ]
 
@@ -408,8 +410,14 @@ def logged_in_screen (user_num,username,num_users):
         elif(event == "Receive Data from Pacemaker"):
             flag = 9
             break
-        elif(event == "Display Egram"):
+        elif(event == "Display Ventricle Egram"):
             flag = 10
+            break
+        elif(event == "Display Atrial Egram"):
+            flag = 11
+            break
+        elif(event == "Display Dual Egram"):
+            flag = 12
             break
         elif (event == sg.WIN_CLOSED):
             break
@@ -438,6 +446,12 @@ def logged_in_screen (user_num,username,num_users):
     elif(flag == 9):
         receive_data(user_num,username,num_users)
     elif(flag == 10):
+        display_vent_egram()
+        logged_in_screen(user_num,username,num_users)
+    elif(flag == 11):
+        display_atr_egram()
+        logged_in_screen(user_num,username,num_users)
+    elif(flag == 12):
         display_egram()
         logged_in_screen(user_num,username,num_users)
 
@@ -1071,9 +1085,50 @@ def display_egram():
     x_high = 5
     y_low = 0
     y_high = 1
+    signal = UART_receive_data()[7:9]
+    VentSignalPrev = signal[0]
+    AtrSignalPrev = signal[1]
+    basetime = time.time()
+    while(t < fulltime):
+        plt.title('Dual Electrocardigram (V-Blue A-Red)')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Voltage (V)')
+        plt.axis([x_low, x_high, y_low, y_high])
+        elapsed_time = 0
+        elapsed_time_prev = 0
+        time1 = time.time()
+        while(elapsed_time < x_high):
+            signal = UART_receive_data()[7:9]
+            VentSignal = signal[0]
+            AtrSignal = signal[1]
+            plt.plot([x_low + elapsed_time_prev, x_low + elapsed_time], [VentSignalPrev, VentSignal], 'b')
+            plt.plot([x_low + elapsed_time_prev, x_low + elapsed_time], [AtrSignalPrev, AtrSignal], 'r')
+            plt.pause(timestep)
+            time.sleep(0.01)
+            VentSignalPrev = VentSignal
+            AtrSignalPrev = AtrSignal
+            elapsed_time_prev = elapsed_time
+            elapsed_time = time.time()- time1
+        x_low = elapsed_time
+        x_high = x_high + x_low
+        t = time.time() - basetime
+        plt.clf()
+
+
+def display_vent_egram():
+    t = 0.0
+    timestep = 0.01
+    fulltime = 10
+    x_low = 0
+    x_high = 5
+    y_low = 0
+    y_high = 1
     VentSignalPrev = UART_receive_data()[7]
     basetime = time.time()
     while(t < fulltime):
+        plt.title('Ventricle Electrocardigram')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Voltage (V)')
         plt.axis([x_low, x_high, y_low, y_high])
         elapsed_time = 0
         elapsed_time_prev = 0
@@ -1090,6 +1145,40 @@ def display_egram():
         x_high = x_high + x_low
         t = time.time() - basetime
         plt.clf()
+
+
+def display_atr_egram():
+    t = 0.0
+    timestep = 0.01
+    fulltime = 10
+    x_low = 0
+    x_high = 5
+    y_low = 0
+    y_high = 1
+    AtrSignalPrev = UART_receive_data()[8]
+    basetime = time.time()
+    while(t < fulltime):
+        plt.title('Atrial Electrocardigram')
+        plt.xlabel('Time (s)')
+        plt.ylabel('Voltage (V)')
+        plt.axis([x_low, x_high, y_low, y_high])
+        elapsed_time = 0
+        elapsed_time_prev = 0
+        time1 = time.time()
+        while(elapsed_time < x_high):
+            AtrSignal = UART_receive_data()[8]
+            plt.plot([x_low + elapsed_time_prev, x_low + elapsed_time], [AtrSignalPrev, AtrSignal], 'r')
+            plt.pause(timestep)
+            time.sleep(0.01)
+            AtrSignalPrev = AtrSignal
+            elapsed_time_prev = elapsed_time
+            elapsed_time = time.time()- time1
+        x_low = elapsed_time
+        x_high = x_high + x_low
+        t = time.time() - basetime
+        plt.clf()
+
+
 
 
 ##for i in range(1, x_high):
