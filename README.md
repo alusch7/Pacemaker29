@@ -10,7 +10,7 @@
 ### About
 Group 29's pacemaker project repository for our 3K04 Lab.
 
-## Our VVI and AAI Mode Explained
+## Our VVI and AAI Refractory Period Explained
 For explanation purposes, we will assume a hear trate of 60 BPM and a refractory period of 300ms. A photo of our AAI workflow is attached at the bottom.
 
 In this case (60 BPM), the entire pacing cycle (including the refractory period) must last 1000ms. Therefore, the time between charging and pacing must be equivalent to the total period time (1000ms) minus the refractory period (300ms) minus the pulse width. So the delay between charging and pacing can be written as (PERIOD - VRP - VPW) as shown below.
