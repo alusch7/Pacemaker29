@@ -8,7 +8,7 @@
 - [Ranuja Pinnaduwage](https://github.com/pinnaduk)
 
 ### About
-Group 29's pacemaker project repository for our 3K04 Lab.
+Group 29's pacemaker project repository for our 3K04 Lab. In this project, we interface with an artifical heart and a pacemaker of our own design, and via Simulink, demonstrate the VOO, AOO, VVI, and AAI modes of a real pacemaker. We also have created a DCM which allows us to interface with the pacemaker via a GUI, and change funcitonal parameters.
 
 ## Our VVI and AAI Refractory Period Explained
 For explanation purposes, we will assume a hear trate of 60 BPM and a refractory period of 300ms. A photo of our AAI workflow is attached at the bottom.
